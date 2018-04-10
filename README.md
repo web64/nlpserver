@@ -2,11 +2,15 @@
 Python Flask web service for eacy access to multi-linguial NLP tasks.
 
 ## Simple Installation
-> pip3 install -r requirements.txt
+```
+pip3 install -r requirements.txt
+```
 
 ### Download Polyglot  mopdels for languages
-> polyglot download LANG:no
-> polyglot download LANG:en
+```
+polyglot download LANG:no
+polyglot download LANG:en
+```
 
 ## Detailed Installation 
 INSTALL:
