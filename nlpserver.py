@@ -1,9 +1,9 @@
-# To run:
-# $ nohup python3 nlpserver1.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 #
-# 0.3 - 05/04/2017 
-#	- fixed mysql connection for sys7 
-#	- mysql test in /
+#	https://github.com/web64/nlpserver
+#
+# To run:
+# $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
+#
 
 from flask import Flask
 from flask import jsonify
@@ -22,7 +22,7 @@ default_data['web64'] = {
 		'app': 'nlpserver',
 		'version':	'0.8',
 		'last_modified': '2018-04-10',
-		'link': 'http://nlpserver.web64.com',
+		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
 	}
 
@@ -59,7 +59,7 @@ def embeddings():
 		return jsonify(data)
 
 	
-	data['neighbors'] = {}
+	data['neighbours'] = {}
 
 	try:
 		word = Word(params['word'], language=params['lang'])
@@ -71,7 +71,7 @@ def embeddings():
 		data['error'] = 'word not found'
 		return jsonify(data)
 
-	data['neighbors'] = word.neighbors
+	data['neighbours'] = word.neighbors
 
 	return jsonify(data)
 
@@ -85,7 +85,7 @@ def language():
 
 	if request.method == 'GET':
 		params['text'] = request.args.get('text')
-	elif request.method == 'GET':
+	elif request.method == 'POST':
 		params = request.form # postdata
 	else:
 		data['error'] = 'Invalid request method'

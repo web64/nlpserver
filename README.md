@@ -1,5 +1,5 @@
 # NLP Server
-Python Flask web service for eacy access to multi-linguial NLP tasks.
+Python Flask web service for easy access to multi-linguial NLP tasks.
 
 ## Simple Installation
 ```
@@ -32,8 +32,10 @@ sudo pip3 install pattern
 
 ## To run:
 ```
-$ nohup python3 nlpserver.py  >nlpserver_out.log 2>nlpserver_errors.log &
+$ nohup python3 nlpserver.py  >logs\nlpserver_out.log 2>logs\nlpserver_errors.log &
 ```
+
+## Run as a service:
 
 
 ## Future tasks
