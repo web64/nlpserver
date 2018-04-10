@@ -1,0 +1,10 @@
+pyicu
+numpy
+Flask
+polyglot
+morfessor
+langid
+newspaper3k
+pycld2
+summa
+pattern
