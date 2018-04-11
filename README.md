@@ -1,5 +1,5 @@
 # NLP Server
-Python Flask web service for easy access to multi-linguial NLP tasks.
+Python Flask web service for easy access to multilingual NLP tasks.
 
 ## Simple Installation
 ```
