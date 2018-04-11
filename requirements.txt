@@ -7,4 +7,4 @@ langid
 newspaper3k
 pycld2
 summa
-pattern
+#pattern
