@@ -35,7 +35,19 @@ $ nohup python3 nlpserver.py  >logs\nlpserver_out.log 2>logs\nlpserver_errors.lo
 ```
 
 ## Run as a service:
+First, install Supervisor if not already installed
+```
+sudo apt-get update && sudo apt-get install python-setuptools
+sudo easy_install supervisor
+```
+Copy nlpserver.conf to /etc/supervisor/supervisord.conf and edit paths.
+Then run this to start the NLPserver:
 
+```
+sudo supervisorctl reread
+sudo supervisroctl update
+sudo supervisorctl nlpserver start
+```
 
 ## Install Recipe for forge.laravel.com
 Add this recipe on Forge and run it as root to install NLPserver.
