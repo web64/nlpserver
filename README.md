@@ -27,7 +27,6 @@ sudo pip3 install langid
 sudo pip3 install newspaper3k
 sudo pip3 install pycld2
 sudo pip3 install summa
-sudo pip3 install pattern
 ```
 
 ## To run:
