@@ -38,6 +38,26 @@ $ nohup python3 nlpserver.py  >logs\nlpserver_out.log 2>logs\nlpserver_errors.lo
 ## Run as a service:
 
 
+## Install Recipe for forge.laravel.com
+Add this recipe on Forge and run it as root to install NLPserver.
+```
+cd /home/forge/
+git clone https://github.com/web64/nlpserver.git
+chown -R forge:forge /home/forge/nlpserver
+cd /home/forge/nlpserver
+
+# python
+apt-get install -y python-numpy libicu-dev
+apt-get install -y python3-pip
+pip3 install -r requirements.txt
+
+# Supervisor
+cp nlpserver.conf /etc/supervisor/conf.d
+supervisorctl reread
+supervisorctl update
+supervisorctl start nlpserver
+```
+
 ## Future tasks
 - [ ] Add SpaCy support
 - [ ] Use more production ready webserver than Flask's built in server
