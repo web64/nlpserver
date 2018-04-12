@@ -137,7 +137,7 @@ def polyglot():
 	if len(data['params']['text']) > 100:
 		data['polyglot']['sentiment'] = polyglot_text.polarity
 	else:
-		data['polyglot']['sentiment'] = ''
+		data['polyglot']['sentiment'] = 0
 
 	data['polyglot']['type_entities']  = {}
 	if polyglot_text.entities:
