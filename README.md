@@ -31,7 +31,7 @@ sudo pip3 install summa
 
 ## To run:
 ```
-$ nohup python3 nlpserver.py  >logs\nlpserver_out.log 2>logs\nlpserver_errors.log &
+$ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 ```
 
 ## Run as a service:

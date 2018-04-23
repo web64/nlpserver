@@ -134,10 +134,11 @@ def polyglot():
 
 	polyglot_text = Text(data['params']['text'], hint_language_code=data['params']['lang'])
 	data['polyglot']['entities'] = polyglot_text.entities
-	if len(data['params']['text']) > 100:
-		data['polyglot']['sentiment'] = polyglot_text.polarity
-	else:
-		data['polyglot']['sentiment'] = 0
+	data['polyglot']['sentiment'] = polyglot_text.polarity
+	# if len(data['params']['text']) > 100:
+	# 	data['polyglot']['sentiment'] = polyglot_text.polarity
+	# else:
+	# 	data['polyglot']['sentiment'] = 0
 
 	data['polyglot']['type_entities']  = {}
 	if polyglot_text.entities:
