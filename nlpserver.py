@@ -21,7 +21,7 @@ default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
 		'version':	'0.8',
-		'last_modified': '2018-04-10',
+		'last_modified': '2018-04-20',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
 	}
