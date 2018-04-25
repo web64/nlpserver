@@ -21,9 +21,10 @@ default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
 		'version':	'0.8',
-		'last_modified': '2018-04-20',
+		'last_modified': '2018-04-25',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
+		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper'],
 	}
 
 default_data['message'] = 'Welcome to NLP API by web64.com'
@@ -36,6 +37,36 @@ def main():
 
 
 
+@app.route("/summarize", methods=['GET', 'POST'])
+def summarize():
+	from gensim.summarization.summarizer import summarize
+	data = dict(default_data)
+	data['message'] = "Summarize long text - Usage: 'text' POST parameter"
+	params = {}
+
+	if request.method == 'GET':
+		return jsonify(data)
+
+	params = request.form # postdata
+
+	if not params:
+		data['error'] = 'Missing parameters'
+		return jsonify(data)
+
+	if not params['text']:
+		data['error'] = '[text] parameter not found'
+		return jsonify(data)
+
+	
+	# if not params['word_count']:
+	# 	word_count = None
+	# else:
+	# 	word_count = params['word_count']
+	
+	#data['summary'] = summarize( text=params['text'], word_count=word_count )
+	data['summary'] = summarize( text=params['text'] )
+
+	return jsonify(data)
 
 @app.route("/embeddings", methods=['GET'])
 def embeddings():

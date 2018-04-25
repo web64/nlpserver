@@ -6,5 +6,7 @@ morfessor
 langid
 newspaper3k
 pycld2
-summa
+gensim
+spacy
+#summa
 #pattern
