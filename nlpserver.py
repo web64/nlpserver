@@ -5,9 +5,7 @@
 # $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 #
 
-from flask import Flask
-from flask import jsonify
-from flask import request
+from flask import Flask, jsonify, abort, request # abort( 404 )
 from polyglot.text import Text, Word
 from newspaper import Article
 import langid
@@ -24,7 +22,7 @@ default_data['web64'] = {
 		'last_modified': '2018-04-25',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper'],
+		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper', '/spacy/entities'],
 	}
 
 default_data['message'] = 'Welcome to NLP API by web64.com'
@@ -35,6 +33,49 @@ def main():
 	data = default_data
 	return jsonify(data)
 
+
+@app.route("/spacy/entities", methods=['GET', 'POST'])
+def spacy_entities():
+	import spacy
+	data = dict(default_data)
+	data['message'] = "Spacyio Entities (NER) - Usage: 'text' POST parameter, 'lang' POST parameter for Spacy model (lang=en by default)"
+	params = {}
+
+	if request.method == 'GET':
+		return jsonify(data)
+
+	params = request.form # postdata
+
+	if not params:
+		data['error'] = 'Missing parameters'
+		return jsonify(data)
+
+	if not 'text' in params:
+		data['error'] = '[text] parameter not found'
+		return jsonify(data)
+
+	if not 'lang' in params:
+		lang = 'en'
+	else:
+		lang = params['lang']
+
+	nlp = spacy.load( lang )
+	doc = nlp( params['text'] )
+	data['entities']  = {}
+	
+	counters  = {}
+	for ent in doc.ents:
+		if not ent.label_ in data['entities']:
+			data['entities'][ent.label_] = dict()
+			counters[ent.label_] = 0
+		else:
+			counters[ent.label_] += 1
+	
+		data['entities'][ ent.label_ ][ counters[ent.label_] ] =  ent.text
+		#data['entities'][ent.label_].add( ent.text )
+
+	print( data['entities'] )
+	return jsonify(data)
 
 
 @app.route("/summarize", methods=['GET', 'POST'])
@@ -53,18 +94,18 @@ def summarize():
 		data['error'] = 'Missing parameters'
 		return jsonify(data)
 
-	if not params['text']:
+	if not 'text' in params:
 		data['error'] = '[text] parameter not found'
 		return jsonify(data)
 
 	
-	# if not params['word_count']:
-	# 	word_count = None
-	# else:
-	# 	word_count = params['word_count']
+	if not 'word_count' in params:
+		word_count = None
+	else:
+		word_count = params['word_count']
 	
-	#data['summary'] = summarize( text=params['text'], word_count=word_count )
-	data['summary'] = summarize( text=params['text'] )
+	data['summary'] = summarize( text=params['text'], word_count=word_count )
+	#data['summary'] = summarize( text=params['text'] )
 
 	return jsonify(data)
 
@@ -185,7 +226,7 @@ def polyglot():
 
 
 
-@app.route("/newspaper")
+@app.route("/newspaper", methods=['GET', 'POST'])
 def newspaper():
 	data = dict(default_data)
 	data['params'] = {}
@@ -202,18 +243,18 @@ def newspaper():
 		article = Article(url=data['params']['url'],keep_article_html=True)
 		article.download()
 	elif request.method == 'POST':
-		data['params'] = request.form # postdata
+		params = request.form # postdata
 
-		if not data['params']:
+		if not params:
 			data['error'] = 'Missing parameters'
 			return jsonify(data)
 
-		if not data['params']['html']:
+		if not params['html']:
 			data['error'] = 'html parameter not found'
 			return jsonify(data)
 	
 		article = Article(url='',keep_article_html=True)
-		article.set_html(data['params']['html'])
+		article.set_html( params['html'] )
 	else:
 		data['error'] = 'Invalid request method'
 		return jsonify(data)
@@ -245,6 +286,6 @@ def newspaper():
 
 	return jsonify(data)
 
-app.run(host='0.0.0.0', port=6400)
+app.run(host='0.0.0.0', port=6400, debug=False)
 
 
