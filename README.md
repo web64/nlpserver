@@ -1,21 +1,33 @@
 # NLP Server
-Python Flask web service for easy access to multilingual NLP tasks.
+Python Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
+
+NLP Server is intented as an easy way for non-python programming languages to access some of the great NLP libraries that are available in python.
+
+The server is simple to set up and easy to integrate with your programming language of choice.
+
 
 ## Simple Installation
+The NLP Server has been tested on Ubuntu, but should work on all flavours of Linux.
+
 ```
 pip3 install -r requirements.txt
 ```
 
 ### Download Polyglot  mopdels for languages
-```
-polyglot download LANG:no
+Polyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).
+
+You'll need to download the models for the 
+
+```bash
+# For example: English and Norwegian
 polyglot download LANG:en
+polyglot download LANG:no
 ```
 
 ## Detailed Installation 
 INSTALL:
 ```
-sudo apt-get install -Y python-numpy libicu-dev
+sudo apt-get install -Y libicu-dev
 sudo apt-get install -y python3-pip
 
 sudo pip3 install pyicu
@@ -70,6 +82,10 @@ supervisorctl update
 supervisorctl start nlpserver
 ```
 
+## Contribute
+If you are familiar with NLP or Python, please let us know how this project can be improved!
+
 ## Future tasks
-- [ ] Add SpaCy support
+- [ ] News Classification
+- [ ] Translation
 - [ ] Use more production ready webserver than Flask's built in server
