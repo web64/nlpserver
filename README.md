@@ -53,9 +53,15 @@ Endpoint|Method|Parameters|Info|Library
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
 /polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /language|GET,POST|text|Language detection from provided text|langid
-/embeddings|GET|word|Embeddinga: neighbouring words|polyglot
+/embeddings|GET|word,lang|Embeddinga: neighbouring words|polyglot
 /summarize|POST|text|Summarization of long text|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in guiven language|SpaCy
+
+## PHP or Laravel
+A PHP library and Laraval package is available:
+* https://github.com/web64/php-nlp-client
+* https://github.com/web64/laravel-nlp
+
 
 ## Usage
 For API responses see /response_examples/ direactory
