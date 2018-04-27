@@ -1,14 +1,12 @@
 #
-#	https://github.com/web64/nlpserver
+#	NLP Server: https://github.com/web64/nlpserver
 #
-# To run:
-# $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
+#	To run:
+# 	$ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 #
-
-from flask import Flask, jsonify, abort, request # abort( 404 )
-from polyglot.text import Text, Word
-from newspaper import Article
-import langid
+from flask import Flask, jsonify, abort, request, send_from_directory # abort( 404 )
+import os
+#from polyglot.text import Text, Word
 
 app = Flask(__name__)
 
@@ -18,8 +16,8 @@ app = Flask(__name__)
 default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
-		'version':	'0.8',
-		'last_modified': '2018-04-25',
+		'version':	'0.9',
+		'last_modified': '2018-04-27',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
 		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper', '/spacy/entities'],
@@ -32,6 +30,11 @@ default_data['message'] = 'Welcome to NLP API by web64.com'
 def main():
 	data = default_data
 	return jsonify(data)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route("/spacy/entities", methods=['GET', 'POST'])
@@ -111,6 +114,7 @@ def summarize():
 
 @app.route("/embeddings", methods=['GET'])
 def embeddings():
+	from polyglot.text import Word
 	data = dict(default_data)
 	data['message'] = "Embeddings - Find neighbors of word  API - Usage: 'word' GET parameter "
 	params = {}
@@ -149,6 +153,7 @@ def embeddings():
 
 @app.route("/language", methods=['GET', 'POST'])
 def language():
+	import langid
 	data = dict(default_data)
 	data['message'] = "Language Detection API - Usage: 'text' GET/POST parameter "
 	data['langid'] = {}
@@ -183,7 +188,9 @@ def language():
 
 @app.route("/polyglot", methods=['POST'])
 def polyglot():
+	from polyglot.text import Text
 	data = dict(default_data)
+	data['message'] = "Entity Extraction and Sentiment Analysis"
 	data['params'] = {}
 	data['polyglot'] = {}
 
@@ -224,11 +231,11 @@ def polyglot():
 	return jsonify(data)
 
 
-
-
 @app.route("/newspaper", methods=['GET', 'POST'])
 def newspaper():
+	from newspaper import Article
 	data = dict(default_data)
+	data['message'] = "Article Extraction by Newspaper"
 	data['params'] = {}
 	data['error'] = ''
 	data['newspaper'] = {}
@@ -286,6 +293,6 @@ def newspaper():
 
 	return jsonify(data)
 
-app.run(host='0.0.0.0', port=6400, debug=False)
+app.run(host='0.0.0.0', port=6400, debug=True)
 
 

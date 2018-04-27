@@ -1,0 +1,83 @@
+{
+    "error": "",
+    "langid": {
+        "language": "en",
+        "score": -3861.935520172119
+    },
+    "message": "Welcome to NLP API by web64.com",
+    "newspaper": {
+        "article_html": "<div><h1><a id=\"user-content-nlp-server\" class=\"anchor\" href=\"#nlp-server\"></a>NLP Server</h1>\n<p>Python Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.</p>\n<p>NLP Server is intented as an easy way for non-python programming languages to access some of the great NLP libraries that are available in python.</p>\n<p>The server is simple to set up and easy to integrate with your programming language of choice.</p>\n<h2><a id=\"user-content-simple-installation\" class=\"anchor\" href=\"#simple-installation\"></a>Simple Installation</h2>\n<p>The NLP Server has been tested on Ubuntu, but should work on all flavours of Linux.</p>\n<pre><code>pip3 install -r requirements.txt\n</code></pre>\n<h3><a id=\"user-content-download-polyglot--mopdels-for-languages\" class=\"anchor\" href=\"#download-polyglot--mopdels-for-languages\"></a>Download Polyglot  mopdels for languages</h3>\n<p>Polyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).</p>\n<p>You'll need to download the models for the languages you want to use.</p>\n<pre><p class=\"pl-c\"><p class=\"pl-c\">#</p> For example: English and Norwegian</p>\npolyglot download LANG:en\npolyglot download LANG:no</pre><h2><a id=\"user-content-detailed-installation\" class=\"anchor\" href=\"#detailed-installation\"></a>Detailed Installation</h2>\n<p>INSTALL:</p>\n<pre><code>sudo apt-get install -Y libicu-dev\nsudo apt-get install -y python3-pip\n\nsudo pip3 install pyicu\nsudo pip3 install numpy\nsudo pip3 install Flask\nsudo pip3 install polyglot\nsudo pip3 install morfessor\nsudo pip3 install langid\nsudo pip3 install newspaper3k\nsudo pip3 install pycld2\nsudo pip3 install gensim\nsudo pip3 install spacy\n</code></pre>\n<h2><a id=\"user-content-to-run\" class=\"anchor\" href=\"#to-run\"></a>To run:</h2>\n<pre><code>$ nohup python3 nlpserver.py  &gt;logs/nlpserver_out.log 2&gt;logs/nlpserver_errors.log &amp;\n</code></pre>\n<h2><a id=\"user-content-run-as-a-service\" class=\"anchor\" href=\"#run-as-a-service\"></a>Run as a service:</h2>\n<p>First, install Supervisor if not already installed</p>\n<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install python-setuptools\nsudo easy_install supervisor\n</code></pre>\n<p>Copy nlpserver.conf to /etc/supervisor/supervisord.conf and edit paths.\nThen run this to start the NLPserver:</p>\n<pre><code>sudo supervisorctl reread\nsudo supervisroctl update\nsudo supervisorctl nlpserver start\n</code></pre>\n<h2><a id=\"user-content-install-recipe-for-forgelaravelcom\" class=\"anchor\" href=\"#install-recipe-for-forgelaravelcom\"></a>Install Recipe for forge.laravel.com</h2>\n<p>Add this recipe on Forge and run it as root to install NLPserver.</p>\n<pre><code>cd /home/forge/\ngit clone https://github.com/web64/nlpserver.git\nchown -R forge:forge /home/forge/nlpserver\ncd /home/forge/nlpserver\n\n# python\napt-get install -y python-numpy libicu-dev\napt-get install -y python3-pip\npip3 install -r requirements.txt\n\n# Supervisor\ncp nlpserver.conf /etc/supervisor/conf.d\nsupervisorctl reread\nsupervisorctl update\nsupervisorctl start nlpserver\n</code></pre>\n<h2><a id=\"user-content-api-endpoints\" class=\"anchor\" href=\"#api-endpoints\"></a>API Endpoints</h2>\n\n\n\nEndpoint\nMethod\nParameters\nInfo\nLibrary\n\n\n\n\n/newspaper\nGET\nurl\nArticle extraction for provided URL\nnewspaper\n\n\n/newspaper\nPOST\nhtml\nArticle extraction for provided HTML\nnewspaper\n\n\n/polyglot\nPOST\ntext,lang\nEntity extraction and sentiment analysis for provided text\npolyglot\n\n\n/language\nGET,POST\ntext\nLanguage detection from provided text\nlangid\n\n\n/embeddings\nGET\nword\nEmbeddinga: neighbouring words\npolyglot\n\n\n/summarize\nPOST\ntext\nSummarization of long text\ngensim\n\n\n/spacy/entities\nPOST\ntext,lang\nEntity extraction for provided text in guiven language\nSpaCy\n\n<h2><a id=\"user-content-contribute\" class=\"anchor\" href=\"#contribute\"></a>Contribute</h2>\n<p>If you are familiar with NLP or Python, please let us know how this project can be improved!</p>\n<h2><a id=\"user-content-future-tasks\" class=\"anchor\" href=\"#future-tasks\"></a>Future tasks</h2>\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"> News Classification</li>\n<li class=\"task-list-item\"> Translation</li>\n<li class=\"task-list-item\"> Use more production ready webserver than Flask's built in server</li>\n</ul>\n</div>\n  ",
+        "authors": [],
+        "canonical_url": "https://github.com/web64/nlpserver",
+        "meta_data": {
+            "analytics-location": "/<user-name>/<repo-name>",
+            "browser-errors-url": "https://api.github.com/_private/browser/errors",
+            "browser-stats-url": "https://api.github.com/_private/browser/stats",
+            "description": "nlpserver - NLP Web Service",
+            "dimension1": "Logged Out",
+            "enabled-features": "UNIVERSE_BANNER,FREE_TRIALS,MARKETPLACE_INSIGHTS,MARKETPLACE_SELF_SERVE,MARKETPLACE_FREE_APPS,MARKETPLACE_INSIGHTS_CONVERSION_PERCENTAGES",
+            "expected-hostname": "github.com",
+            "fb": {
+                "app_id": 1401488693436528
+            },
+            "go-import": "github.com/web64/nlpserver git https://github.com/web64/nlpserver.git",
+            "google-analytics": "UA-3769691-2",
+            "google-site-verification": "GXs5KoUUkNCoaAZn7wPN-t01Pywp9M3sEjnt_3_ZWPc",
+            "hostname": "github.com",
+            "html-safe-nonce": "f07af4d6e9db12b7797cd5905c8112f9a1900d17",
+            "js-proxy-site-detection-payload": "ZDBiZTNjOTBlNWMxOGUyNmE3MzE0MDhjNWU3NDIyYzIyOTc4ZWRkY2FkMzE3YmFmNmEwZGVlZTk3NDBlY2M2Nnx7InJlbW90ZV9hZGRyZXNzIjoiMzcuMTQuMTY2LjkzIiwicmVxdWVzdF9pZCI6IkZBOUM6NzkzRjoyRjZFNUUzOjU3QzhBOTg6NUFFMzUxMkIiLCJ0aW1lc3RhbXAiOjE1MjQ4NDY4OTEsImhvc3QiOiJnaXRodWIuY29tIn0=",
+            "octolytics-app-id": "github",
+            "octolytics-dimension-region_edge": "iad",
+            "octolytics-dimension-region_render": "iad",
+            "octolytics-dimension-repository_explore_github_marketplace_ci_cta_shown": "false",
+            "octolytics-dimension-repository_id": 76955026,
+            "octolytics-dimension-repository_is_fork": "false",
+            "octolytics-dimension-repository_network_root_id": 76955026,
+            "octolytics-dimension-repository_network_root_nwo": "web64/nlpserver",
+            "octolytics-dimension-repository_nwo": "web64/nlpserver",
+            "octolytics-dimension-repository_public": "true",
+            "octolytics-dimension-request_id": "FA9C:793F:2F6E5E3:57C8A98:5AE3512B",
+            "octolytics-dimension-user_id": 76733,
+            "octolytics-dimension-user_login": "web64",
+            "octolytics-event-url": "https://collector.githubapp.com/github-external/browser_event",
+            "octolytics-host": "collector.githubapp.com",
+            "og": {
+                "description": "nlpserver - NLP Web Service",
+                "image": "https://avatars2.githubusercontent.com/u/76733?s=400&v=4",
+                "site_name": "GitHub",
+                "title": "web64/nlpserver",
+                "type": "object",
+                "url": "https://github.com/web64/nlpserver"
+            },
+            "pjax-timeout": 1000,
+            "request-id": "FA9C:793F:2F6E5E3:57C8A98:5AE3512B",
+            "selected-link": "repo_source",
+            "theme-color": "#1e2327",
+            "viewport": "width=device-width"
+        },
+        "meta_description": "GitHub is where people build software. More than 27 million people use GitHub to discover, fork, and contribute to over 80 million projects.",
+        "meta_lang": "en",
+        "source_url": "https://github.com",
+        "text": "NLP Server\n\nPython Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.\n\nNLP Server is intented as an easy way for non-python programming languages to access some of the great NLP libraries that are available in python.\n\nThe server is simple to set up and easy to integrate with your programming language of choice.\n\nSimple Installation\n\nThe NLP Server has been tested on Ubuntu, but should work on all flavours of Linux.\n\npip3 install -r requirements.txt\n\nDownload Polyglot mopdels for languages\n\nPolyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).\n\nYou'll need to download the models for the languages you want to use.\n\n# For example: English and Norwegian polyglot download LANG:en polyglot download LANG:no\n\nDetailed Installation\n\nINSTALL:\n\nsudo apt-get install -Y libicu-dev sudo apt-get install -y python3-pip sudo pip3 install pyicu sudo pip3 install numpy sudo pip3 install Flask sudo pip3 install polyglot sudo pip3 install morfessor sudo pip3 install langid sudo pip3 install newspaper3k sudo pip3 install pycld2 sudo pip3 install gensim sudo pip3 install spacy\n\nTo run:\n\n$ nohup python3 nlpserver.py >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &\n\nRun as a service:\n\nFirst, install Supervisor if not already installed\n\nsudo apt-get update && sudo apt-get install python-setuptools sudo easy_install supervisor\n\nCopy nlpserver.conf to /etc/supervisor/supervisord.conf and edit paths. Then run this to start the NLPserver:\n\nsudo supervisorctl reread sudo supervisroctl update sudo supervisorctl nlpserver start\n\nInstall Recipe for forge.laravel.com\n\nAdd this recipe on Forge and run it as root to install NLPserver.\n\ncd /home/forge/ git clone https://github.com/web64/nlpserver.git chown -R forge:forge /home/forge/nlpserver cd /home/forge/nlpserver # python apt-get install -y python-numpy libicu-dev apt-get install -y python3-pip pip3 install -r requirements.txt # Supervisor cp nlpserver.conf /etc/supervisor/conf.d supervisorctl reread supervisorctl update supervisorctl start nlpserver\n\nAPI Endpoints\n\nEndpoint Method Parameters Info Library /newspaper GET url Article extraction for provided URL newspaper /newspaper POST html Article extraction for provided HTML newspaper /polyglot POST text,lang Entity extraction and sentiment analysis for provided text polyglot /language GET,POST text Language detection from provided text langid /embeddings GET word Embeddinga: neighbouring words polyglot /summarize POST text Summarization of long text gensim /spacy/entities POST text,lang Entity extraction for provided text in guiven language SpaCy\n\nContribute\n\nIf you are familiar with NLP or Python, please let us know how this project can be improved!\n\nFuture tasks",
+        "title": "web64/nlpserver: NLP Web Service",
+        "top_image": "https://avatars2.githubusercontent.com/u/76733?s=400&v=4"
+    },
+    "params": {
+        "url": "https://github.com/web64/nlpserver"
+    },
+    "web64": {
+        "app": "nlpserver",
+        "endpoints": [
+            "/summarize",
+            "/embeddings",
+            "/language",
+            "/polyglot",
+            "/newspaper",
+            "/spacy/entities"
+        ],
+        "github": "https://github.com/web64/nlp-server",
+        "last_modified": "2018-04-27",
+        "link": "http://nlpserver.web64.com/",
+        "version": "0.9"
+    }
+}

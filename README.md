@@ -7,8 +7,7 @@ The server is simple to set up and easy to integrate with your programming langu
 
 
 ## Simple Installation
-The NLP Server has been tested on Ubuntu, but should work on all flavours of Linux.
-
+The NLP Server has been tested on Ubuntu, but should work on all Linux flavours.
 ```
 pip3 install -r requirements.txt
 ```
@@ -47,6 +46,43 @@ sudo pip3 install spacy
 $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 ```
 
+## API Endpoints
+Endpoint|Method|Parameters|Info|Library
+------- | ---- | --------- | -- | -----
+/newspaper|GET|url|Article extraction for provided URL|newspaper
+/newspaper|POST|html|Article extraction for provided HTML|newspaper
+/polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
+/language|GET,POST|text|Language detection from provided text|langid
+/embeddings|GET|word|Embeddinga: neighbouring words|polyglot
+/summarize|POST|text|Summarization of long text|gensim
+/spacy/entities|POST|text,lang|Entity extraction for provided text in guiven language|SpaCy
+
+## Usage
+For API responses see /response_examples/ direactory
+
+### /newspaper - Article Extraction
+
+#### From URL: 
+GET /newspaper?url=https://github.com/web64/nlpserver
+```bash
+curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
+```
+
+#### From HTML:
+POST /newspaper [html="<html>....</html>"]
+```bash
+curl --data "html=<html>...</html>" http://localhost:6400/newspaper
+```
+
+### Entity Extraction & Sentiment Analysis
+POST /polyglot [params: text]
+```bash
+curl --data "text=\"The quick brown fox jumps over the lazy dog \"" http://localhost:6400/polyglot
+```
+
+
+
+
 ## Run as a service:
 First, install Supervisor if not already installed
 ```
@@ -82,21 +118,11 @@ supervisorctl update
 supervisorctl start nlpserver
 ```
 
-## API Endpoints
-Endpoint|Method|Parameters|Info|Library
-------- | ---- | --------- | -- | -----
-/newspaper|GET|url|Article extraction for provided URL|newspaper
-/newspaper|POST|html|Article extraction for provided HTML|newspaper
-/polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
-/language|GET,POST|text|Language detection from provided text|langid
-/embeddings|GET|word|Embeddinga: neighbouring words|polyglot
-/summarize|POST|text|Summarization of long text|gensim
-/spacy/entities|POST|text,lang|Entity extraction for provided text in guiven language|SpaCy
-
 ## Contribute
 If you are familiar with NLP or Python, please let us know how this project can be improved!
 
 ## Future tasks
 - [ ] News Classification
+- [ ] More sentiment anlysis options
 - [ ] Translation
 - [ ] Use more production ready webserver than Flask's built in server

@@ -1,0 +1,22 @@
+{
+    "langid": {
+        "language": "en",
+        "score": -42.31864953041077
+    },
+    "message": "Detected Language: en",
+    "web64": {
+        "app": "nlpserver",
+        "endpoints": [
+            "/summarize",
+            "/embeddings",
+            "/language",
+            "/polyglot",
+            "/newspaper",
+            "/spacy/entities"
+        ],
+        "github": "https://github.com/web64/nlp-server",
+        "last_modified": "2018-04-27",
+        "link": "http://nlpserver.web64.com/",
+        "version": "0.9"
+    }
+}
