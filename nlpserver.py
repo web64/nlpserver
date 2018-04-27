@@ -38,7 +38,7 @@ def main():
 def spacy_entities():
 	import spacy
 	data = dict(default_data)
-	data['message'] = "Spacyio Entities (NER) - Usage: 'text' POST parameter, 'lang' POST parameter for Spacy model (lang=en by default)"
+	data['message'] = "Spacy.io Entities (NER) - Usage: 'text' POST parameter, 'lang' POST parameter for Spacy model (lang=en by default)"
 	params = {}
 
 	if request.method == 'GET':

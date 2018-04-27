@@ -16,7 +16,7 @@ pip3 install -r requirements.txt
 ### Download Polyglot  mopdels for languages
 Polyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).
 
-You'll need to download the models for the 
+You'll need to download the models for the languages you want to use.
 
 ```bash
 # For example: English and Norwegian
@@ -81,6 +81,17 @@ supervisorctl reread
 supervisorctl update
 supervisorctl start nlpserver
 ```
+
+## API Endpoints
+Endpoint|Method|Parameters|Info|Library
+------- | ---- | --------- | -- | -----
+/newspaper|GET|url|Article extraction for provided URL|newspaper
+/newspaper|POST|html|Article extraction for provided HTML|newspaper
+/polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
+/language|GET,POST|text|Language detection from provided text|langid
+/embeddings|GET|word|Embeddinga: neighbouring words|polyglot
+/summarize|POST|text|Summarization of long text|gensim
+/spacy/entities|POST|text,lang|Entity extraction for provided text in guiven language|SpaCy
 
 ## Contribute
 If you are familiar with NLP or Python, please let us know how this project can be improved!
