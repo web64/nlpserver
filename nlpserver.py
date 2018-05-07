@@ -20,7 +20,7 @@ default_data['web64'] = {
 		'last_modified': '2018-04-27',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper', '/spacy/entities'],
+		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper', '/readability', '/spacy/entities'],
 	}
 
 default_data['message'] = 'Welcome to NLP API by web64.com'
@@ -189,8 +189,9 @@ def language():
 @app.route("/polyglot", methods=['POST'])
 def polyglot():
 	from polyglot.text import Text
+
 	data = dict(default_data)
-	data['message'] = "Entity Extraction and Sentiment Analysis"
+	data['message'] = "Entity Extraction, Sentiment Analysis"
 	data['params'] = {}
 	data['polyglot'] = {}
 
@@ -231,11 +232,55 @@ def polyglot():
 	return jsonify(data)
 
 
+# https://github.com/buriy/python-readability
+@app.route("/readability", methods=['GET', 'POST'])
+def readability():
+	import requests
+	from readability import Document	
+	data = dict(default_data)
+	data['message'] = "Article Extraction by Readability"
+	data['params'] = {}
+	data['error'] = ''
+	data['data'] = {}
+
+	if request.method == 'GET':
+		data['params']['url'] = request.args.get('url')
+		if not data['params']['url']:
+			data['error'] = '[url] parameter not found'
+			return jsonify(data)
+
+		response = requests.get( data['params']['url'] )
+		doc = Document(response.text)
+
+	elif request.method == 'POST':
+		params = request.form # postdata
+
+		if not params:
+			data['error'] = 'Missing parameters'
+			return jsonify(data)
+
+		if not params['html']:
+			data['error'] = 'html parameter not found'
+			return jsonify(data)
+	
+		doc = Document( params['html'] )
+
+
+	
+	data['data']['title'] = doc.title()
+	data['data']['short_title'] = doc.short_title()
+	data['data']['content'] = doc.content()
+	data['data']['summary'] = doc.summary()
+
+	return jsonify(data)
+
 @app.route("/newspaper", methods=['GET', 'POST'])
 def newspaper():
 	from newspaper import Article
+	import langid
+
 	data = dict(default_data)
-	data['message'] = "Article Extraction by Newspaper"
+	data['message'] = "Article Extraction by Newspaper, and Language Detection by Langid"
 	data['params'] = {}
 	data['error'] = ''
 	data['newspaper'] = {}
@@ -293,6 +338,6 @@ def newspaper():
 
 	return jsonify(data)
 
-app.run(host='0.0.0.0', port=6400, debug=True)
+app.run(host='0.0.0.0', port=6400, debug=False)
 
 

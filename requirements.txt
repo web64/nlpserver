@@ -8,5 +8,6 @@ newspaper3k
 pycld2
 gensim
 spacy
+readability-lxml
 #summa
 #pattern
