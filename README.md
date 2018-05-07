@@ -51,8 +51,8 @@ Endpoint|Method|Parameters|Info|Library
 ------- | ---- | --------- | -- | -----
 /newspaper|GET|url|Article extraction for provided URL|newspaper
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
-/readability|GET|url|Article extraction for provided URL|newspaper
-/readability|POST|html|Article extraction for provided HTML|newspaper
+/readability|GET|url|Article extraction for provided URL|readability-lxml
+/readability|POST|html|Article extraction for provided HTML|readability-lxml
 /polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /language|GET,POST|text|Language detection from provided text|langid
 /embeddings|GET|word,lang|Embeddinga: neighbouring words|polyglot
