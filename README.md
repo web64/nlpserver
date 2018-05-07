@@ -51,6 +51,8 @@ Endpoint|Method|Parameters|Info|Library
 ------- | ---- | --------- | -- | -----
 /newspaper|GET|url|Article extraction for provided URL|newspaper
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
+/readability|GET|url|Article extraction for provided URL|newspaper
+/readability|POST|html|Article extraction for provided HTML|newspaper
 /polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /language|GET,POST|text|Language detection from provided text|langid
 /embeddings|GET|word,lang|Embeddinga: neighbouring words|polyglot
@@ -79,6 +81,22 @@ POST /newspaper [html="<html>....</html>"]
 ```bash
 curl --data "html=<html>...</html>" http://localhost:6400/newspaper
 ```
+
+
+### /readability - Article Extraction
+
+#### From URL: 
+GET /readability?url=https://github.com/web64/nlpserver
+```bash
+curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
+```
+
+#### From HTML:
+POST /readability [html="<html>....</html>"]
+```bash
+curl --data "html=<html>...</html>" http://localhost:6400/newspaper
+```
+
 
 ### Entity Extraction & Sentiment Analysis
 POST /polyglot [params: text]
