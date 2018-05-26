@@ -29,6 +29,59 @@ default_data['message'] = 'NLP Server by web64.com'
 @app.route("/")
 def main():
 	data = default_data
+	data['missing_libraries'] = []
+	
+	try:
+		import textblob
+	except ImportError:
+		data['missing_libraries'].append('textblob')
+
+	try:
+		import spacy
+	except ImportError:
+		data['missing_libraries'].append('spacy')
+	try:
+		import gensim
+	except ImportError:
+		data['missing_libraries'].append('gensim')
+	
+	try:
+		import newspaper
+	except ImportError:
+		data['missing_libraries'].append('newspaper')
+
+	try:
+		import langid
+	except ImportError:
+		data['missing_libraries'].append('langid')
+
+	try:
+		import readability
+	except ImportError:
+		data['missing_libraries'].append('readability')
+	
+	try:
+		import bs4
+	except ImportError:
+		data['missing_libraries'].append('bs4')
+	
+
+	try:
+		import polyglot
+	except ImportError:
+		data['missing_libraries'].append('polyglot')
+	else:
+		from polyglot.downloader import Downloader
+		dwnld = Downloader()
+		#data['polyglot_languages'] = dwnld.supported_languages(task="ner2")
+		data['polyglot_lang_models'] = {}
+
+		for info in sorted(dwnld.collections(), key=str):
+			status = dwnld.status(info)
+			if info.id.startswith('LANG:') and status != 'not installed':
+				data['polyglot_lang_models'][info.id] = status
+
+
 	return jsonify(data)
 
 
