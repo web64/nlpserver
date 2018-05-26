@@ -22,7 +22,7 @@ You'll need to download the models for the languages you want to use.
 polyglot download LANG:en
 polyglot download LANG:no
 ```
-
+The root api endpoint will list installed Polyglot language modules: http://localhost:6400/
 
 ### Download SpaCy models for entity extraction (NER)
 If you want to use the /spacy/entities endpoint for article extraction you need to download the models for the languages you want to use
@@ -34,8 +34,7 @@ python -m spacy download xx
 ```
 
 
-## Detailed Installation 
-INSTALL:
+### Detailed Installation 
 ```
 sudo apt-get install -Y libicu-dev
 sudo apt-get install -y python3-pip
@@ -53,6 +52,7 @@ sudo pip3 install spacy
 sudo pip3 install readability-lxml
 sudo pip3 install BeautifulSoup4
 ```
+The root api endpoint will list missing python modules: http://localhost:6400/
 
 ## To run:
 ```
@@ -79,7 +79,7 @@ A PHP library and Laraval package is available:
 
 
 ## Usage
-For API responses see /response_examples/ direactory
+For API responses see /response_examples/ directory.
 
 ### /newspaper - Article & Metadata Extraction
 Returns article text, authors, main image, publish date and meta-data for given url or HTML.
@@ -93,7 +93,7 @@ curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 #### From HTML:
 POST /newspaper [html="<html>....</html>"]
 ```bash
-curl --data "html=<html>...</html>" http://localhost:6400/newspaper
+curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
 
 ### /langid - Language Detection
@@ -220,4 +220,4 @@ If you are familiar with NLP or Python, please let us know how this project can 
 - [ ] News Classification
 - [ ] More sentiment anlysis options
 - [ ] Translation
-- [ ] Use more production ready webserver than Flask's built in server
+- [ ] List installed Spacy packages
