@@ -9,5 +9,6 @@ pycld2
 gensim
 spacy
 readability-lxml
+BeautifulSoup4
 #summa
 #pattern

@@ -50,6 +50,7 @@ sudo pip3 install newspaper3k
 sudo pip3 install pycld2
 sudo pip3 install gensim
 sudo pip3 install spacy
+sudo pip3 install readability-lxml
 sudo pip3 install BeautifulSoup4
 ```
 
