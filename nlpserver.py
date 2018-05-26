@@ -20,10 +20,10 @@ default_data['web64'] = {
 		'last_modified': '2018-04-27',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/summarize', '/embeddings', '/language', '/polyglot', '/newspaper', '/readability', '/spacy/entities'],
+		'endpoints': ['/summarize', '/neighbours', '/langid', '/polyglot', '/newspaper', '/readability', '/spacy/entities'],
 	}
 
-default_data['message'] = 'Welcome to NLP API by web64.com'
+default_data['message'] = 'NLP Server by web64.com'
 
 
 @app.route("/")
@@ -101,22 +101,20 @@ def summarize():
 		data['error'] = '[text] parameter not found'
 		return jsonify(data)
 
-	
 	if not 'word_count' in params:
 		word_count = None
 	else:
 		word_count = params['word_count']
 	
-	data['summary'] = summarize( text=params['text'], word_count=word_count )
-	#data['summary'] = summarize( text=params['text'] )
+	data['summarize'] = summarize( text=params['text'], word_count=word_count )
 
 	return jsonify(data)
 
-@app.route("/embeddings", methods=['GET'])
+@app.route("/neighbours", methods=['GET'])
 def embeddings():
 	from polyglot.text import Word
 	data = dict(default_data)
-	data['message'] = "Embeddings - Find neighbors of word  API - Usage: 'word' GET parameter "
+	data['message'] = "Neighbours (Embeddings) - Find neighbors of word API - Parameters: 'word', 'lang' language (default: en)"
 	params = {}
 	
 	params['word']= request.args.get('word')
@@ -131,10 +129,10 @@ def embeddings():
 		return jsonify(data)
 
 	if not params['lang']:
-		data['error'] = '[lang] parameter not found'
-		return jsonify(data)
+		# data['error'] = '[lang] parameter not found'
+		# return jsonify(data)
+		params['lang'] = 'en'
 
-	
 	data['neighbours'] = {}
 
 	try:
@@ -151,7 +149,7 @@ def embeddings():
 
 	return jsonify(data)
 
-@app.route("/language", methods=['GET', 'POST'])
+@app.route("/langid", methods=['GET', 'POST'])
 def language():
 	import langid
 	data = dict(default_data)
@@ -186,12 +184,12 @@ def language():
 
 
 
-@app.route("/polyglot", methods=['POST'])
+@app.route("/polyglot", methods=['GET','POST'])
 def polyglot():
 	from polyglot.text import Text
 
 	data = dict(default_data)
-	data['message'] = "Entity Extraction, Sentiment Analysis"
+	data['message'] = "Entity Extraction and Sentiment Analysis API- POST only"
 	data['params'] = {}
 	data['polyglot'] = {}
 
@@ -205,20 +203,23 @@ def polyglot():
 		data['error'] = 'Text parameter not found'
 		return jsonify(data)
 
-	if not data['params']['lang']:
-		data['params']['lang'] is None
-		# data['error'] = 'lang parameter not found'
-		# return jsonify(data)
+	if not 'lang' in data['params']:
+		language = 'en' # default language
+	else:
+		language = data['params']['lang']
+	
+	return jsonify(data)
 
-	#article_content =  data['params']['text']
-
-	polyglot_text = Text(data['params']['text'], hint_language_code=data['params']['lang'])
+	polyglot_text = Text(data['params']['text'], hint_language_code=language)
 	data['polyglot']['entities'] = polyglot_text.entities
 	data['polyglot']['sentiment'] = polyglot_text.polarity
 	# if len(data['params']['text']) > 100:
 	# 	data['polyglot']['sentiment'] = polyglot_text.polarity
 	# else:
 	# 	data['polyglot']['sentiment'] = 0
+
+
+	
 
 	data['polyglot']['type_entities']  = {}
 	if polyglot_text.entities:
@@ -237,11 +238,13 @@ def polyglot():
 def readability():
 	import requests
 	from readability import Document	
+	from bs4 import BeautifulSoup 
+
 	data = dict(default_data)
 	data['message'] = "Article Extraction by Readability"
 	data['params'] = {}
 	data['error'] = ''
-	data['data'] = {}
+	data['readability'] = {}
 
 	if request.method == 'GET':
 		data['params']['url'] = request.args.get('url')
@@ -264,13 +267,14 @@ def readability():
 			return jsonify(data)
 	
 		doc = Document( params['html'] )
-
-
 	
-	data['data']['title'] = doc.title()
-	data['data']['short_title'] = doc.short_title()
-	data['data']['content'] = doc.content()
-	data['data']['summary'] = doc.summary()
+	data['readability']['title'] = doc.title()
+	data['readability']['short_title'] = doc.short_title()
+	#data['readability']['content'] = doc.content()
+	data['readability']['article_html'] = doc.summary( html_partial=True )
+
+	soup = BeautifulSoup(data['readability']['summary']) 
+	data['readability']['text'] =  soup.get_text() 
 
 	return jsonify(data)
 

@@ -1,5 +1,5 @@
 # NLP Server
-Python Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
+Python 3 Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
 
 NLP Server is intented as an easy way for non-python programming languages to access some of the great NLP libraries that are available in python.
 
@@ -12,7 +12,7 @@ The NLP Server has been tested on Ubuntu, but should work on all Linux flavours.
 pip3 install -r requirements.txt
 ```
 
-### Download Polyglot  mopdels for languages
+### Download Polyglot  models for languages
 Polyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).
 
 You'll need to download the models for the languages you want to use.
@@ -22,6 +22,17 @@ You'll need to download the models for the languages you want to use.
 polyglot download LANG:en
 polyglot download LANG:no
 ```
+
+
+### Download SpaCy models for entity extraction (NER)
+If you want to use the /spacy/entities endpoint for article extraction you need to download the models for the languages you want to use
+```bash
+# For example English, Spanish and Multi-Language
+python -m spacy download en
+python -m spacy download es
+python -m spacy download xx
+```
+
 
 ## Detailed Installation 
 INSTALL:
@@ -39,6 +50,7 @@ sudo pip3 install newspaper3k
 sudo pip3 install pycld2
 sudo pip3 install gensim
 sudo pip3 install spacy
+sudo pip3 install BeautifulSoup4
 ```
 
 ## To run:
@@ -48,18 +60,18 @@ $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.lo
 
 ## API Endpoints
 Endpoint|Method|Parameters|Info|Library
-------- | ---- | --------- | -- | -----
+------- | ---- | --------- | -- | ----- 
 /newspaper|GET|url|Article extraction for provided URL|newspaper
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
 /readability|GET|url|Article extraction for provided URL|readability-lxml
 /readability|POST|html|Article extraction for provided HTML|readability-lxml
 /polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
-/language|GET,POST|text|Language detection from provided text|langid
-/embeddings|GET|word,lang|Embeddinga: neighbouring words|polyglot
+/langid|GET,POST|text|Language detection from provided text|langid
+/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /summarize|POST|text|Summarization of long text|gensim
-/spacy/entities|POST|text,lang|Entity extraction for provided text in guiven language|SpaCy
+/spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
-## PHP or Laravel
+## PHP or Laravel clients
 A PHP library and Laraval package is available:
 * https://github.com/web64/php-nlp-client
 * https://github.com/web64/laravel-nlp
@@ -68,7 +80,8 @@ A PHP library and Laraval package is available:
 ## Usage
 For API responses see /response_examples/ direactory
 
-### /newspaper - Article Extraction
+### /newspaper - Article & Metadata Extraction
+Returns article text, authors, main image, publish date and meta-data for given url or HTML.
 
 #### From URL: 
 GET /newspaper?url=https://github.com/web64/nlpserver
@@ -82,8 +95,74 @@ POST /newspaper [html="<html>....</html>"]
 curl --data "html=<html>...</html>" http://localhost:6400/newspaper
 ```
 
+### /langid - Language Detection
+GET|POST /langid?text=what+language+is+this
+
+```bash
+curl http://localhost:6400/langid?text=what+language+is+this
+```
+
+Returns language code of provided text
+```json
+langid: {
+language: "en",
+score: -42.31864953041077
+}
+```
+
+### /polyglot - Entity Extraction & Sentiment Analysis
+### POST /polyglot [params: text]
+```bash
+curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot
+```
+
+### /spacy/entities - SpaCy Entiry Extraction
+Note: You'll need to have downloaded the language models for the language you are using
+
+### POST /spacy/entities [params: text, lang]
+```bash
+curl -d "text=President Donald Trump says dialogue with North Korea is productive" http://localhost:6400/spacy/entities
+```
+
+```json
+"entities": {
+    "GPE": {
+      "0": "North Korea"
+    },
+    "PERSON": {
+      "0": "Donald Trump"
+    }
+  }
+```
+
+###  Text summariztion
+### POST /summarize [params: text, word_count (optional)]
+Generates summary for long text. Size of summary by adding a word_count parameter with the maximum number of words in summary.
+
+
+## /neighbours - Neighbouring words
+### GET /neighbours?word=WORD [&lang=en ]
+Uses Polyglot's Embeddings to provide neighbouring words for 
+```bash
+curl http://localhost:6400/neighbours?word=obama
+```
+```json
+"neighbours": [
+    "Bush",
+    "Reagan",
+    "Clinton",
+    "Ahmadinejad",
+    "Nixon",
+    "Karzai",
+    "McCain",
+    "Biden",
+    "Huckabee",
+    "Lula"
+  ]
+```
 
 ### /readability - Article Extraction
+Note: In most cases Newspaper performs better than Readability.
 
 #### From URL: 
 GET /readability?url=https://github.com/web64/nlpserver
@@ -94,17 +173,8 @@ curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 #### From HTML:
 POST /readability [html="<html>....</html>"]
 ```bash
-curl --data "html=<html>...</html>" http://localhost:6400/newspaper
+curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
-
-
-### Entity Extraction & Sentiment Analysis
-POST /polyglot [params: text]
-```bash
-curl --data "text=\"The quick brown fox jumps over the lazy dog \"" http://localhost:6400/polyglot
-```
-
-
 
 
 ## Run as a service:
