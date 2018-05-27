@@ -20,7 +20,7 @@ default_data['web64'] = {
 		'last_modified': '2018-04-27',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/summarize', '/neighbours', '/langid', '/polyglot', '/newspaper', '/readability', '/spacy/entities'],
+		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities'],
 	}
 
 default_data['message'] = 'NLP Server by web64.com'
@@ -28,6 +28,12 @@ default_data['message'] = 'NLP Server by web64.com'
 
 @app.route("/")
 def main():
+	data = default_data
+	
+	return jsonify(data)
+
+@app.route('/status')
+def status():
 	data = default_data
 	data['missing_libraries'] = []
 	
@@ -81,7 +87,6 @@ def main():
 			if info.id.startswith('LANG:') and status != 'not installed':
 				data['polyglot_lang_models'][info.id] = status
 
-
 	return jsonify(data)
 
 
@@ -134,8 +139,8 @@ def spacy_entities():
 	return jsonify(data)
 
 
-@app.route("/summarize", methods=['GET', 'POST'])
-def summarize():
+@app.route("/gensim/summarize", methods=['GET', 'POST'])
+def gensim_summarize():
 	from gensim.summarization.summarizer import summarize
 	data = dict(default_data)
 	data['message'] = "Summarize long text - Usage: 'text' POST parameter"
@@ -163,7 +168,7 @@ def summarize():
 
 	return jsonify(data)
 
-@app.route("/neighbours", methods=['GET'])
+@app.route("/polyglot/neighbours", methods=['GET'])
 def embeddings():
 	from polyglot.text import Word
 	data = dict(default_data)
@@ -236,9 +241,36 @@ def language():
 	return jsonify(data)
 
 
+@app.route("/polyglot/sentiment", methods=['GET','POST'])
+def polyglot_sentiment():
+	from polyglot.text import Text
 
-@app.route("/polyglot", methods=['GET','POST'])
-def polyglot():
+	data = dict(default_data)
+	data['message'] = "Sentiment Analysis API - POST only"
+	data['sentiment'] = {}
+
+	params = request.form # postdata
+
+	if not params:
+		data['error'] = 'Missing parameters'
+		return jsonify(data)
+
+	if not params['text']:
+		data['error'] = 'Text parameter not found'
+		return jsonify(data)
+
+	if not 'lang' in params:
+		language = 'en' # default language
+	else:
+		language = params['lang']
+
+
+	polyglot_text = Text(params['text'], hint_language_code=language)
+	data['sentiment'] = polyglot_text.polarity
+	return jsonify(data)
+
+@app.route("/polyglot/entities", methods=['GET','POST'])
+def polyglot_entities():
 	from polyglot.text import Text
 
 	data = dict(default_data)
@@ -261,7 +293,6 @@ def polyglot():
 	else:
 		language = data['params']['lang']
 	
-	return jsonify(data)
 
 	polyglot_text = Text(data['params']['text'], hint_language_code=language)
 	data['polyglot']['entities'] = polyglot_text.entities
@@ -326,7 +357,7 @@ def readability():
 	#data['readability']['content'] = doc.content()
 	data['readability']['article_html'] = doc.summary( html_partial=True )
 
-	soup = BeautifulSoup(data['readability']['summary']) 
+	soup = BeautifulSoup( data['readability']['article_html'] ) 
 	data['readability']['text'] =  soup.get_text() 
 
 	return jsonify(data)

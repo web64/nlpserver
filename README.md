@@ -62,14 +62,16 @@ $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.lo
 ## API Endpoints
 Endpoint|Method|Parameters|Info|Library
 ------- | ---- | --------- | -- | ----- 
+/status|GET| |List installed Polyglot language models and  missing python packages |
 /newspaper|GET|url|Article extraction for provided URL|newspaper
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
 /readability|GET|url|Article extraction for provided URL|readability-lxml
 /readability|POST|html|Article extraction for provided HTML|readability-lxml
-/polyglot|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
+/polyglot/entities|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
+/polyglot/sentiment|POST|text,lang|Sentiment analysis for provided text|polyglot
+/polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /langid|GET,POST|text|Language detection from provided text|langid
-/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
-/summarize|POST|text|Summarization of long text|gensim
+/gensim/summarize|POST|text|Summarization of long text|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
 ## PHP or Laravel clients
@@ -111,11 +113,25 @@ score: -42.31864953041077
 }
 ```
 
-### /polyglot - Entity Extraction & Sentiment Analysis
-### POST /polyglot [params: text]
+### Entity Extraction & Sentiment Analysis
+### POST /polyglot/entities [params: text]
 ```bash
-curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot
+curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot/entities
 ```
+
+### Sentiment Analysis
+### POST /polyglot/sentiment [params: text, lang (optional)]
+
+```bash
+curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
+```
+```json
+{
+  "message": "Sentiment Analysis API - POST only",
+  "sentiment": 1.0,
+}
+```
+
 
 ### /spacy/entities - SpaCy Entiry Extraction
 Note: You'll need to have downloaded the language models for the language you are using
@@ -137,15 +153,15 @@ curl -d "text=President Donald Trump says dialogue with North Korea is productiv
 ```
 
 ###  Text summariztion
-### POST /summarize [params: text, word_count (optional)]
+### POST /gensim/summarize [params: text, word_count (optional)]
 Generates summary for long text. Size of summary by adding a word_count parameter with the maximum number of words in summary.
 
 
-## /neighbours - Neighbouring words
-### GET /neighbours?word=WORD [&lang=en ]
+## Neighbouring words
+### GET /polyglot/neighbours?word=WORD [&lang=en ]
 Uses Polyglot's Embeddings to provide neighbouring words for 
 ```bash
-curl http://localhost:6400/neighbours?word=obama
+curl http://localhost:6400/polyglot/neighbours?word=obama
 ```
 ```json
 "neighbours": [
@@ -221,3 +237,5 @@ If you are familiar with NLP or Python, please let us know how this project can 
 - [ ] More sentiment anlysis options
 - [ ] Translation
 - [ ] List installed Spacy packages
+- [ ] Add https://github.com/mozilla/readability
+- [ ] Add https://github.com/Microsoft/Recognizers-Text
