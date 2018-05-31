@@ -16,11 +16,11 @@ app = Flask(__name__)
 default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
-		'version':	'0.9',
-		'last_modified': '2018-04-27',
+		'version':	'1.0',
+		'last_modified': '2018-05-31',
 		'link': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities'],
+		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
 	}
 
 default_data['message'] = 'NLP Server by web64.com'
@@ -71,6 +71,10 @@ def status():
 	except ImportError:
 		data['missing_libraries'].append('bs4')
 	
+	try:
+		import afinn
+	except ImportError:
+		data['missing_libraries'].append('afinn')
 
 	try:
 		import polyglot
@@ -359,6 +363,38 @@ def readability():
 
 	soup = BeautifulSoup( data['readability']['article_html'] ) 
 	data['readability']['text'] =  soup.get_text() 
+
+	return jsonify(data)
+
+
+@app.route("/afinn", methods=['GET', 'POST'])
+def afinn_sentiment():
+	data = dict(default_data)
+	data['message'] = "Sentiment Analysis by afinn"
+
+	from afinn import Afinn
+	
+
+	data['afinn'] = 0
+	#data['afinn'] = afinn.score('This is utterly excellent!')
+
+	params = request.form # postdata
+
+	if not params:
+		data['error'] = 'Missing parameters'
+		return jsonify(data)
+
+	if not params['text']:
+		data['error'] = 'Text parameter not found'
+		return jsonify(data)
+
+	if not 'lang' in params:
+		language = 'en' # default language
+	else:
+		language = params['lang']
+
+	afinn = Afinn( language=language )
+	data['afinn'] = afinn.score( params['text'] )
 
 	return jsonify(data)
 

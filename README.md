@@ -70,11 +70,11 @@ Endpoint|Method|Parameters|Info|Library
 /polyglot/entities|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /polyglot/sentiment|POST|text,lang|Sentiment analysis for provided text|polyglot
 /polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
-/langid|GET,POST|text|Language detection from provided text|langid
+/langid|GET,POST|text|Language detection for provided text|langid
 /gensim/summarize|POST|text|Summarization of long text|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
-## PHP or Laravel clients
+## PHP & Laravel clients
 A PHP library and Laraval package is available:
 * https://github.com/web64/php-nlp-client
 * https://github.com/web64/laravel-nlp
