@@ -27,6 +27,9 @@ The root api endpoint will list installed Polyglot language modules: http://loca
 ### Download SpaCy models for entity extraction (NER)
 If you want to use the /spacy/entities endpoint for article extraction you need to download the models for the languages you want to use
 ```bash
+# Install Spacy
+pip3 install -U spacy
+
 # For example English, Spanish and Multi-Language
 python -m spacy download en
 python -m spacy download es
