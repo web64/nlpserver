@@ -10,5 +10,7 @@ gensim
 spacy
 readability-lxml
 BeautifulSoup4
+afinn
+textblob
 #summa
 #pattern

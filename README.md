@@ -36,7 +36,7 @@ python -m spacy download xx
 
 ### Detailed Installation 
 ```
-sudo apt-get install -Y libicu-dev
+sudo apt-get install -y libicu-dev
 sudo apt-get install -y python3-pip
 
 sudo pip3 install pyicu
@@ -51,6 +51,8 @@ sudo pip3 install gensim
 sudo pip3 install spacy
 sudo pip3 install readability-lxml
 sudo pip3 install BeautifulSoup4
+sudo pip3 install afinn
+sudo pip3 install textblob
 ```
 The root api endpoint will list missing python modules: http://localhost:6400/
 
