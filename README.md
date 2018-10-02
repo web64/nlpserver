@@ -244,3 +244,4 @@ If you are familiar with NLP or Python, please let us know how this project can 
 - [ ] List installed Spacy packages
 - [ ] Add https://github.com/mozilla/readability
 - [ ] Add https://github.com/Microsoft/Recognizers-Text
+- [ ] Add https://github.com/alvations/pywsd
