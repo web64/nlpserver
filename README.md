@@ -14,6 +14,7 @@ A PHP library and Laraval package is available:
 ## Step1: Core Installation
 The NLP Server has been tested on Ubuntu, but should work on other versions of Linux.
 ```bash 
+apt-get install -y libicu-dev python3-pip
 pip3 install -r requirements.txt
 ```
 
@@ -27,12 +28,12 @@ You'll need to download the models for the languages you want to use.
 polyglot download LANG:en
 polyglot download LANG:no
 ```
-The root api endpoint will list installed Polyglot language modules: http://localhost:6400/
+The /status api endpoint will list installed Polyglot language modules: http://localhost:6400/status
 
 ### Step 3: Download SpaCy models for entity extraction (NER)
 If you want to use the /spacy/entities endpoint for article extraction you need to download the models for the languages you want to use
 ```bash
-# Install Spacy
+# Install Spacy if not already installed
 pip3 install -U spacy
 
 # For example English, Spanish and Multi-Language
@@ -119,6 +120,7 @@ GET /newspaper?url=https://github.com/web64/nlpserver
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 ```
+Example JSON response: https://raw.githubusercontent.com/web64/nlpserver/master/response_examples/newspaper.json
 
 #### From HTML:
 POST /newspaper [html="<html>....</html>"]
