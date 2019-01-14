@@ -1,18 +1,23 @@
 # NLP Server
-Python 3 Flask web service for easy access to multilingual NLP tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
+NLP Server is a Python 3 Flask web service for easy access to multilingual Natural Language Processing tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
 
-NLP Server is intented as an easy way for non-python programming languages to access some of the great NLP libraries that are available in python.
+NLP Server provides a simple API for non-python programming languages to access some of the great NLP libraries that are available in python.
 
 The server is simple to set up and easy to integrate with your programming language of choice.
 
+## PHP & Laravel clients
+A PHP library and Laraval package is available:
+* https://github.com/web64/php-nlp-client
+* https://github.com/web64/laravel-nlp
 
-## Simple Installation
-The NLP Server has been tested on Ubuntu, but should work on all Linux flavours.
-```
+
+## Step1: Core Installation
+The NLP Server has been tested on Ubuntu, but should work on other versions of Linux.
+```bash 
 pip3 install -r requirements.txt
 ```
 
-### Download Polyglot  models for languages
+### Step 2: Download Polyglot models for human languages
 Polyglot is used for entity extraction, sentiment analysis and embeddings (neighbouring words).
 
 You'll need to download the models for the languages you want to use.
@@ -24,7 +29,7 @@ polyglot download LANG:no
 ```
 The root api endpoint will list installed Polyglot language modules: http://localhost:6400/
 
-### Download SpaCy models for entity extraction (NER)
+### Step 3: Download SpaCy models for entity extraction (NER)
 If you want to use the /spacy/entities endpoint for article extraction you need to download the models for the languages you want to use
 ```bash
 # Install Spacy
@@ -38,7 +43,9 @@ python -m spacy download xx
 
 
 ### Detailed Installation 
-```
+If you have any problems installing from requirements.txt you can instead install the libraries one by one.
+
+```bash
 sudo apt-get install -y libicu-dev
 sudo apt-get install -y python3-pip
 
@@ -57,12 +64,34 @@ sudo pip3 install BeautifulSoup4
 sudo pip3 install afinn
 sudo pip3 install textblob
 ```
-The root api endpoint will list missing python modules: http://localhost:6400/
+The /status api endpoint will list missing python modules: http://localhost:6400/status
 
-## To run:
+
+## Install Recipe for forge.laravel.com servers
+Add this recipe on Forge and run it as root to install NLPserver.
+```bash
+cd /home/forge/
+git clone https://github.com/web64/nlpserver.git
+chown -R forge:forge /home/forge/nlpserver
+cd /home/forge/nlpserver
+
+# python
+apt-get install -y python-numpy libicu-dev
+apt-get install -y python3-pip
+pip3 install -r requirements.txt
+
+# Supervisor
+cp nlpserver.conf /etc/supervisor/conf.d
+supervisorctl reread
+supervisorctl update
+supervisorctl start nlpserver
 ```
+
+## Start NLP Server web service:
+```bash
 $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 ```
+See below for instruction on how to run the NLP Server as a service with Supervisor.
 
 ## API Endpoints
 Endpoint|Method|Parameters|Info|Library
@@ -78,12 +107,6 @@ Endpoint|Method|Parameters|Info|Library
 /langid|GET,POST|text|Language detection for provided text|langid
 /gensim/summarize|POST|text|Summarization of long text|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
-
-## PHP & Laravel clients
-A PHP library and Laraval package is available:
-* https://github.com/web64/php-nlp-client
-* https://github.com/web64/laravel-nlp
-
 
 ## Usage
 For API responses see /response_examples/ directory.
@@ -113,8 +136,8 @@ curl http://localhost:6400/langid?text=what+language+is+this
 Returns language code of provided text
 ```json
 langid: {
-language: "en",
-score: -42.31864953041077
+  "language": "en",
+  "score": -42.31864953041077
 }
 ```
 
@@ -138,8 +161,13 @@ curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
 ```
 
 
-### /spacy/entities - SpaCy Entiry Extraction
-Note: You'll need to have downloaded the language models for the language you are using
+### /spacy/entities - SpaCy Entity Extraction (NER)
+Note: You'll need to have downloaded the language models for the language you are using.
+
+```bash
+# For example for English:
+python -m spacy download en
+```
 
 ### POST /spacy/entities [params: text, lang]
 ```bash
@@ -198,41 +226,22 @@ POST /readability [html="<html>....</html>"]
 curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
 
-
 ## Run as a service:
 First, install Supervisor if not already installed
-```
+```bash
 sudo apt-get update && sudo apt-get install python-setuptools
 sudo easy_install supervisor
 ```
 Copy nlpserver.conf to /etc/supervisor/supervisord.conf and edit paths.
 Then run this to start the NLPserver:
 
-```
+```bash
 sudo supervisorctl reread
 sudo supervisroctl update
 sudo supervisorctl nlpserver start
 ```
 
-## Install Recipe for forge.laravel.com
-Add this recipe on Forge and run it as root to install NLPserver.
-```
-cd /home/forge/
-git clone https://github.com/web64/nlpserver.git
-chown -R forge:forge /home/forge/nlpserver
-cd /home/forge/nlpserver
 
-# python
-apt-get install -y python-numpy libicu-dev
-apt-get install -y python3-pip
-pip3 install -r requirements.txt
-
-# Supervisor
-cp nlpserver.conf /etc/supervisor/conf.d
-supervisorctl reread
-supervisorctl update
-supervisorctl start nlpserver
-```
 
 ## Contribute
 If you are familiar with NLP or Python, please let us know how this project can be improved!
