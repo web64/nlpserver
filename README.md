@@ -6,7 +6,7 @@ NLP Server provides a simple API for non-python programming languages to access 
 The server is simple to set up and easy to integrate with your programming language of choice.
 
 ## PHP & Laravel clients
-A PHP library and Laraval package is available:
+A PHP library and a Laraval package is available:
 * https://github.com/web64/php-nlp-client
 * https://github.com/web64/laravel-nlp
 

@@ -4,9 +4,8 @@
 #	To run:
 # 	$ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 #
-from flask import Flask, jsonify, abort, request, send_from_directory # abort( 404 )
+from flask import Flask, jsonify, abort, request, send_from_directory
 import os
-#from polyglot.text import Text, Word
 
 app = Flask(__name__)
 
@@ -17,24 +16,21 @@ default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
 		'version':	'1.0',
-		'last_modified': '2018-05-31',
-		'link': 'http://nlpserver.web64.com/',
+		'last_modified': '2019-01-14',
+		'documentation': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
 		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
 	}
 
 default_data['message'] = 'NLP Server by web64.com'
-
+data = default_data
 
 @app.route("/")
 def main():
-	data = default_data
-	
 	return jsonify(data)
 
 @app.route('/status')
 def status():
-	data = default_data
 	data['missing_libraries'] = []
 	
 	try:
@@ -83,7 +79,6 @@ def status():
 	else:
 		from polyglot.downloader import Downloader
 		dwnld = Downloader()
-		#data['polyglot_languages'] = dwnld.supported_languages(task="ner2")
 		data['polyglot_lang_models'] = {}
 
 		for info in sorted(dwnld.collections(), key=str):
@@ -172,6 +167,7 @@ def gensim_summarize():
 
 	return jsonify(data)
 
+
 @app.route("/polyglot/neighbours", methods=['GET'])
 def embeddings():
 	from polyglot.text import Word
@@ -210,6 +206,7 @@ def embeddings():
 	data['neighbours'] = word.neighbors
 
 	return jsonify(data)
+
 
 @app.route("/langid", methods=['GET', 'POST'])
 def language():
@@ -272,6 +269,7 @@ def polyglot_sentiment():
 	polyglot_text = Text(params['text'], hint_language_code=language)
 	data['sentiment'] = polyglot_text.polarity
 	return jsonify(data)
+
 
 @app.route("/polyglot/entities", methods=['GET','POST'])
 def polyglot_entities():
@@ -397,6 +395,7 @@ def afinn_sentiment():
 	data['afinn'] = afinn.score( params['text'] )
 
 	return jsonify(data)
+
 
 @app.route("/newspaper", methods=['GET', 'POST'])
 def newspaper():
