@@ -125,20 +125,20 @@ For API responses see /response_examples/ directory.
 Returns article text, authors, main image, publish date and meta-data for given url or HTML.
 
 #### From URL: 
-GET /newspaper?url=http://...
+`GET /newspaper?url=http://...`
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 ```
 Example JSON response: https://raw.githubusercontent.com/web64/nlpserver/master/response_examples/newspaper.json
 
 #### From HTML:
-POST /newspaper [html="<html>....</html>"]
+`POST /newspaper [html="<html>....</html>"]`
 ```bash
 curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
 
 ### /langid - Language Detection
-GET|POST /langid?text=what+language+is+this
+`GET|POST /langid?text=what+language+is+this`
 
 ```bash
 curl http://localhost:6400/langid?text=what+language+is+this
@@ -153,24 +153,10 @@ langid: {
 ```
 
 ### Entity Extraction & Sentiment Analysis
- POST /polyglot/entities [params: text]
+`POST /polyglot/entities [params: text]`
 ```bash
 curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot/entities
 ```
-
-### Sentiment Analysis
-POST /polyglot/sentiment [params: text, lang (optional)]
-
-```bash
-curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
-```
-```json
-{
-  "message": "Sentiment Analysis API - POST only",
-  "sentiment": 1.0,
-}
-```
-
 
 ### /spacy/entities - SpaCy Entity Extraction (NER)
 Note: You'll need to have downloaded the language models for the language you are using.
@@ -180,7 +166,8 @@ Note: You'll need to have downloaded the language models for the language you ar
 python -m spacy download en
 ```
 
-### POST /spacy/entities [params: text, lang]
+
+`POST /spacy/entities [params: text, lang]`
 ```bash
 curl -d "text=President Donald Trump says dialogue with North Korea is productive" http://localhost:6400/spacy/entities
 ```
@@ -194,6 +181,18 @@ curl -d "text=President Donald Trump says dialogue with North Korea is productiv
       "0": "Donald Trump"
     }
   }
+```
+### Sentiment Analysis
+POST /polyglot/sentiment [params: text, lang (optional)]
+
+```bash
+curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
+```
+```json
+{
+  "message": "Sentiment Analysis API - POST only",
+  "sentiment": 1.0,
+}
 ```
 
 ###  Text summarization
