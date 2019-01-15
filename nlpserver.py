@@ -161,7 +161,7 @@ def gensim_summarize():
 	if not 'word_count' in params:
 		word_count = None
 	else:
-		word_count = params['word_count']
+		word_count = int(params['word_count'])
 	
 	data['summarize'] = summarize( text=params['text'], word_count=word_count )
 

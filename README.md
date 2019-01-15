@@ -71,15 +71,20 @@ The /status api endpoint will list missing python modules: http://localhost:6400
 ## Install Recipe for forge.laravel.com servers
 Add this recipe on Forge and run it as root to install NLPserver.
 ```bash
+# Install NLPserver
 cd /home/forge/
 git clone https://github.com/web64/nlpserver.git
 chown -R forge:forge /home/forge/nlpserver
 cd /home/forge/nlpserver
 
-# python
+# python packages
 apt-get install -y python-numpy libicu-dev
 apt-get install -y python3-pip
 pip3 install -r requirements.txt
+
+# English Language models - add other models you might require
+polyglot download LANG:en
+python -m spacy download en
 
 # Supervisor
 cp nlpserver.conf /etc/supervisor/conf.d
