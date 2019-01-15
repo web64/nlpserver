@@ -111,7 +111,7 @@ Endpoint|Method|Parameters|Info|Library
 /polyglot/sentiment|POST|text,lang|Sentiment analysis for provided text|polyglot
 /polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /langid|GET,POST|text|Language detection for provided text|langid
-/gensim/summarize|POST|text|Summarization of long text|gensim
+/gensim/summarize|POST|text,word_count|Summarization of long text|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
 ## Usage

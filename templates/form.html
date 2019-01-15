@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NLP Server Console">
+    <title>NLP Server</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <!-- link href="pricing.css" rel="stylesheet" -->
+  </head>
+  <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h5 class="my-0 mr-md-auto font-weight-normal">NLP Server - API Console</h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="https://github.com/web64/nlpserver">Documentation</a>
+        </nav>
+        <a class="btn btn-outline-primary" href="/status">Status</a>
+    </div>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+            <!-- div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <p class="lead">
+                    description text
+                </p>
+            </div -->
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom: 20px;">
+                <li class="nav-item">
+                  <a class="nav-link active" id="language-tab" data-toggle="tab" href="#language" role="tab" aria-controls="language" aria-selected="true">Language Detection</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="entities-tab" data-toggle="tab" href="#entities" role="tab" aria-controls="entities" aria-selected="false">Entity Extraction</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="articleextraction-tab" data-toggle="tab" href="#articleextraction" role="tab" aria-controls="articleextraction" aria-selected="false">Article Extraction</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="sentiment-tab" data-toggle="tab" href="#sentiment" role="tab" aria-controls="sentiment" aria-selected="false">Sentiment Analysis</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="embeddings-tab" data-toggle="tab" href="#embeddings" role="tab" aria-controls="embeddings" aria-selected="false">Embeddings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="summarize-tab" data-toggle="tab" href="#summarize" role="tab" aria-controls="summarize" aria-selected="false">Summarize</a>
+                </li>
+              </ul>
+              
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div class="tab-pane active" id="language" role="tabpanel" aria-labelledby="language-tab">
+
+                    <div class="card-deck mb-3 text-center">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Language Detection</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-left"><strong>GET/POST - /langid {text}</strong></p>
+                                <form action="/langid" method="POST">
+                                    <div class="form-group">
+                                        <textarea name="text" id="" cols="30" rows="10"class="form-control" placeholder="Text..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="entities" role="tabpanel" aria-labelledby="entities-tab">
+                    
+                    <div class="card-deck mb-3 text-center">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Entity Extraction (NER) - Spacy</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-left"><strong>POST - /spacy/entities {text,lang=en}</strong></p>
+                                <form action="/spacy/entities" method="POST">
+                                    <div class="form-group">
+                                        <textarea name="text" id="text" rows="6"class="form-control" placeholder="Text..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lang">Language Code:</label>
+                                        <input type="text" name="lang" class="form-control" id="lang" value="en">
+                                    </div>
+                                    <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-deck mb-3 text-center">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h4 class="my-0 font-weight-normal">Entity Extraction (NER) - Polyglot</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-left"><strong>POST - /polyglot/entities {text,lang=en}</strong></p>
+                                    <form action="/polyglot/entities" method="POST">
+                                        <textarea name="text" id="text" rows="6"class="form-control" placeholder="Text..."></textarea>
+                                        <div class="form-group">
+                                            <label for="language">Language Code:</label>
+                                            <input type="text" name="lang" class="form-control" id="language" value="en">
+                                        </div>
+                                        <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                <div class="tab-pane" id="articleextraction" role="tabpanel" aria-labelledby="articleextraction-tab">
+
+                        <div class="card-deck mb-3 text-center">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Article Extraction - From URL</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-left"><strong>GET - /newspaper {url}</strong></p>
+                                        <form action="/newspaper" method="GET">
+                                            <div class="form-group">
+                                                <label for="language">URL:</label>
+                                                <input type="text" name="url" class="form-control" id="language" placeholder="http://..">
+                                            </div>
+                                            <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-deck mb-3 text-center">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Article Extraction - From HTML</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-left"><strong>POST - /newspaper {html}</strong></p>
+                                        <form action="/newspaper" method="POST">
+                                            <div class="form-group">
+                                                <textarea name="html"  rows="10"class="form-control" placeholder="HTML..."></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                </div>
+                <div class="tab-pane" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">
+
+                    <div class="card-deck mb-3 text-center">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h4 class="my-0 font-weight-normal">Sentiment Analysis</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-left"><strong>POST - /polyglot/sentiment {text,lang=en}</strong></p>
+                                    <form action="/polyglot/sentiment" method="POST">
+                                        <textarea name="text" id="text" rows="10"class="form-control" placeholder="Text..."></textarea>
+                                        <div class="form-group">
+                                            <label for="lang">Language Code:</label>
+                                            <input type="text" name="lang" class="form-control" id="lang" value="en">
+                                        </div>
+                                        <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="tab-pane" id="embeddings" role="tabpanel" aria-labelledby="embeddings-tab">
+                        <div class="card-deck mb-3 text-center">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h4 class="my-0 font-weight-normal">Embeddings: Neighbouring words</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-left"><strong>GET - /polyglot/neighbours {word,lang=en}</strong></p>
+                                    <form action="/polyglot/neighbours" method="GET">
+                                        <div class="form-group row">
+                                            <label for="word" class="col-sm-2 col-form-label">Word:</label>
+                                            <div class="col-sm-10">
+                                                    <input type="text" name="word" id="word" class="form-control" id="language" placeholder="president">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="lang" class="col-sm-2 col-form-label">Language Code:</label>
+                                            <div class="col-sm-10">
+                                                    <input type="text" name="lang" class="form-control" id="language" value="en">
+                                            </div>
+                                            
+                                        </div>
+                                        <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="tab-pane" id="summarize" role="tabpanel" aria-labelledby="summarize-tab">
+
+                    <div class="card-deck mb-3 text-center">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Summarize</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-left"><strong>POST - /gensim/summarize {text,lang=en}</strong></p>
+                                <form action="/gensim/summarize" method="POST">
+                                    <textarea name="text" id="text" rows="10"class="form-control" placeholder="Long Text..."></textarea>
+                                    <div class="form-group">
+                                        <label for="language">Max Word Count:</label>
+                                        <input type="text" name="word_count" class="form-control" id="word_count" placeholder="30">
+                                    </div>
+                                    <button type="submit" class="btn btn-lg btn-block btn-success">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+              </div> <!-- /tab-content-->
+
+        </div>
+    </div>
+        
+        
+  <footer class="pt-4 my-md-5 pt-md-5 border-top">
+    <div class="row">
+      
+      <div class="col-6 col-md">
+        <h5>Github</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="https://github.com/web64/nlpserver">NLP Server</a></li>
+          <li><a class="text-muted" href="https://github.com/web64/php-nlp-client">PHP Client</a></li>
+          <li><a class="text-muted" href="https://github.com/web64/laravel-nlp">Laravel NLP Package</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md"></div>
+
+      <div class="col-6 col-md">
+        <h5>About</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="http://web64.com/">http://web64.com/</a></li>
+          <li><a class="text-muted" href="https://twitter.com/web64">Follow @web64 on Twitter</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js" integrity="sha384-zDnhMsjVZfS3hiP7oCBRmfjkQC4fzxVxFhBx8Hkz2aZX8gEvA/jsP3eXRCvzTofP" crossorigin="anonymous"></script>
+</body>
+</html>

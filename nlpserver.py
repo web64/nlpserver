@@ -4,7 +4,7 @@
 #	To run:
 # 	$ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 #
-from flask import Flask, jsonify, abort, request, send_from_directory
+from flask import Flask, jsonify, abort, request, send_from_directory, render_template
 import os
 
 app = Flask(__name__)
@@ -27,10 +27,12 @@ data = default_data
 
 @app.route("/")
 def main():
-	return jsonify(data)
+	return render_template('form.html')
+	#return jsonify(data)
 
 @app.route('/status')
 def status():
+	data = dict(default_data)
 	data['missing_libraries'] = []
 	
 	try:
@@ -277,29 +279,32 @@ def polyglot_entities():
 
 	data = dict(default_data)
 	data['message'] = "Entity Extraction and Sentiment Analysis API- POST only"
-	data['params'] = {}
 	data['polyglot'] = {}
 
-	data['params'] = request.form # postdata
+	params = request.form # postdata
 
-	if not data['params']:
+	if not params:
 		data['error'] = 'Missing parameters'
 		return jsonify(data)
 
-	if not data['params']['text']:
+	if not params['text']:
 		data['error'] = 'Text parameter not found'
 		return jsonify(data)
 
-	if not 'lang' in data['params']:
+	if not 'lang' in params:
 		language = 'en' # default language
 	else:
-		language = data['params']['lang']
+		language = params['lang']
 	
+	
+	polyglot_text = Text(params['text'], hint_language_code=language)
 
-	polyglot_text = Text(data['params']['text'], hint_language_code=language)
 	data['polyglot']['entities'] = polyglot_text.entities
-	data['polyglot']['sentiment'] = polyglot_text.polarity
-	# if len(data['params']['text']) > 100:
+	try:
+		data['polyglot']['sentiment'] = polyglot_text.polarity
+	except:
+		data['polyglot']['sentiment'] = 0
+	# if len(params['text']) > 100:
 	# 	data['polyglot']['sentiment'] = polyglot_text.polarity
 	# else:
 	# 	data['polyglot']['sentiment'] = 0
@@ -460,6 +465,11 @@ def newspaper():
 		data['langid']['score'] = lang_data[1]
 
 	return jsonify(data)
+
+
+# @app.route("/tester", methods=['GET', 'POST'])
+# def tester():
+# 	return render_template('form.html')
 
 app.run(host='0.0.0.0', port=6400, debug=False)
 
