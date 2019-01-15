@@ -152,13 +152,15 @@ langid: {
 }
 ```
 
-### Entity Extraction & Sentiment Analysis
+### Polyglot Entity Extraction & Sentiment Analysis
 `POST /polyglot/entities [params: text]`
 ```bash
 curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot/entities
 ```
 
 ### SpaCy Entity Extraction (NER)
+`POST /spacy/entities [params: text, lang]`
+
 Note: You'll need to have downloaded the language models for the language you are using.
 
 ```bash
@@ -166,8 +168,6 @@ Note: You'll need to have downloaded the language models for the language you ar
 python -m spacy download en
 ```
 
-
-`POST /spacy/entities [params: text, lang]`
 ```bash
 curl -d "text=President Donald Trump says dialogue with North Korea is productive" http://localhost:6400/spacy/entities
 ```
@@ -183,7 +183,7 @@ curl -d "text=President Donald Trump says dialogue with North Korea is productiv
   }
 ```
 ### Sentiment Analysis
-POST /polyglot/sentiment [params: text, lang (optional)]
+`POST /polyglot/sentiment [params: text, lang (optional)]`
 
 ```bash
 curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
@@ -196,7 +196,7 @@ curl -d "text=This is great!" http://localhost:6400/polyglot/sentiment
 ```
 
 ###  Text summarization
-POST /gensim/summarize [params: text, word_count (optional)]
+`POST /gensim/summarize [params: text, word_count (optional)]`
 
 Generates summary for long text. Size of summary by adding a word_count parameter with the maximum number of words in summary.
 
