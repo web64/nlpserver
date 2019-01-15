@@ -196,7 +196,7 @@ curl -d "text=President Donald Trump says dialogue with North Korea is productiv
   }
 ```
 
-###  Text summariztion
+###  Text summarization
 POST /gensim/summarize [params: text, word_count (optional)]
 
 Generates summary for long text. Size of summary by adding a word_count parameter with the maximum number of words in summary.
