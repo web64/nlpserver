@@ -137,7 +137,7 @@ Example JSON response: https://raw.githubusercontent.com/web64/nlpserver/master/
 curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
 
-### /langid - Language Detection
+### Language Detection
 `GET|POST /langid?text=what+language+is+this`
 
 ```bash
@@ -158,7 +158,7 @@ langid: {
 curl -d "text=The quick brown fox jumps over the lazy dog" http://localhost:6400/polyglot/entities
 ```
 
-### /spacy/entities - SpaCy Entity Extraction (NER)
+### SpaCy Entity Extraction (NER)
 Note: You'll need to have downloaded the language models for the language you are using.
 
 ```bash
@@ -227,13 +227,13 @@ curl http://localhost:6400/polyglot/neighbours?word=obama
 Note: In most cases Newspaper performs better than Readability.
 
 #### From URL: 
-GET /readability?url=https://github.com/web64/nlpserver
+`GET /readability?url=https://github.com/web64/nlpserver`
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 ```
 
 #### From HTML:
-POST /readability [html="<html>....</html>"]
+`POST /readability [html="<html>....</html>"]`
 ```bash
 curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 ```
