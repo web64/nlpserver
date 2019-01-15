@@ -125,7 +125,7 @@ For API responses see /response_examples/ directory.
 Returns article text, authors, main image, publish date and meta-data for given url or HTML.
 
 #### From URL: 
-GET /newspaper?url=https://github.com/web64/nlpserver
+GET /newspaper?url=http://...
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
 ```
