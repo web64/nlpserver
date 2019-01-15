@@ -202,8 +202,9 @@ POST /gensim/summarize [params: text, word_count (optional)]
 Generates summary for long text. Size of summary by adding a word_count parameter with the maximum number of words in summary.
 
 
-## Neighbouring words
-### GET /polyglot/neighbours?word=WORD [&lang=en ]
+### Neighbouring words
+`GET /polyglot/neighbours?word=WORD [&lang=en ]`
+
 Uses Polyglot's Embeddings to provide neighbouring words for 
 ```bash
 curl http://localhost:6400/polyglot/neighbours?word=obama
