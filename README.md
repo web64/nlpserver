@@ -69,7 +69,8 @@ The /status api endpoint will list missing python modules: http://localhost:6400
 
 
 ## Install Recipe for forge.laravel.com servers
-Add this recipe on Forge and run it as root to install NLPserver.
+Add this recipe on Forge and run it as root to install NLPserver as a service with Supervisor.
+
 ```bash
 # Install NLPserver
 cd /home/forge/
@@ -94,10 +95,13 @@ supervisorctl start nlpserver
 ```
 
 ## Start NLP Server web service:
+To start the server manually run:
 ```bash
 $ nohup python3 nlpserver.py  >logs/nlpserver_out.log 2>logs/nlpserver_errors.log &
 ```
-See below for instruction on how to run the NLP Server as a service with Supervisor.
+
+You can now access the web console and test that the NLP Server is working: http://localhost:6400/
+
 
 ## API Endpoints
 Endpoint|Method|Parameters|Info|Library
