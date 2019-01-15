@@ -87,7 +87,7 @@ pip3 install -r requirements.txt
 polyglot download LANG:en
 python -m spacy download en
 
-# Supervisor
+# Supervisor - update paths in nlpserver.conf if different
 cp nlpserver.conf /etc/supervisor/conf.d
 supervisorctl reread
 supervisorctl update
