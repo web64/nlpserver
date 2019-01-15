@@ -15,8 +15,8 @@ app = Flask(__name__)
 default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
-		'version':	'1.0',
-		'last_modified': '2019-01-14',
+		'version':	'1.0.1',
+		'last_modified': '2019-01-15',
 		'documentation': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
 		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
