@@ -136,7 +136,6 @@ def spacy_entities():
 		data['entities'][ ent.label_ ][ counters[ent.label_] ] =  ent.text
 		#data['entities'][ent.label_].add( ent.text )
 
-	print( data['entities'] )
 	return jsonify(data)
 
 
