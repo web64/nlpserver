@@ -85,7 +85,7 @@ pip3 install -r requirements.txt
 
 # English Language models - add other models you might require
 polyglot download LANG:en
-python -m spacy download en
+python3 -m spacy download en
 
 # Supervisor - update paths in nlpserver.conf if different
 cp nlpserver.conf /etc/supervisor/conf.d
