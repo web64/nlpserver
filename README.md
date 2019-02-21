@@ -268,3 +268,4 @@ If you are familiar with NLP or Python, please let us know how this project can 
 - [ ] Add https://github.com/mozilla/readability
 - [ ] Add https://github.com/Microsoft/Recognizers-Text
 - [ ] Add https://github.com/alvations/pywsd
+- [ ] Add https://github.com/datalib/libextract
