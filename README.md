@@ -1,7 +1,8 @@
 # NLP Server
 <p align="center">
   <img src="http://cdn.web64.com/nlp-norway/nlp-server-1.png" width="500">
-</a>
+</p>
+
 NLP Server is a Python 3 Flask web service for easy access to multilingual Natural Language Processing tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
 
 NLP Server provides a simple API for non-python programming languages to access some of the great NLP libraries that are available in python.
