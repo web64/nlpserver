@@ -22,6 +22,7 @@ git clone https://github.com/web64/nlpserver.git
 cd nlpserver
 
 sudo apt-get install -y libicu-dev python3-pip
+sudo apt-get install polyglot
 pip3 install -r requirements.txt
 ```
 
@@ -44,9 +45,9 @@ If you want to use the /spacy/entities endpoint for article extraction you need 
 pip3 install -U spacy
 
 # For example English, Spanish and Multi-Language
-python -m spacy download en
-python -m spacy download es
-python -m spacy download xx
+python3 -m spacy download en
+python3 -m spacy download es
+python3 -m spacy download xx
 ```
 
 
