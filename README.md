@@ -18,6 +18,9 @@ A PHP library and a Laraval package is available:
 ## Step1: Core Installation
 The NLP Server has been tested on Ubuntu, but should work on other versions of Linux.
 ```bash 
+git clone https://github.com/web64/nlpserver.git
+cd nlpserver
+
 apt-get install -y libicu-dev python3-pip
 pip3 install -r requirements.txt
 ```
