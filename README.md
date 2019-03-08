@@ -22,7 +22,7 @@ git clone https://github.com/web64/nlpserver.git
 cd nlpserver
 
 sudo apt-get install -y libicu-dev python3-pip
-sudo pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Step 2: Download Polyglot models for human languages
