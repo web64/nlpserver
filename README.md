@@ -21,8 +21,8 @@ The NLP Server has been tested on Ubuntu, but should work on other versions of L
 git clone https://github.com/web64/nlpserver.git
 cd nlpserver
 
-apt-get install -y libicu-dev python3-pip
-pip3 install -r requirements.txt
+sudo apt-get install -y libicu-dev python3-pip
+sudo pip3 install -r requirements.txt
 ```
 
 ### Step 2: Download Polyglot models for human languages
