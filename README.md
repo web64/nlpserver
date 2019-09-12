@@ -17,7 +17,7 @@ A PHP library and a Laraval package is available:
 
 ## Step1: Core Installation
 The NLP Server has been tested on Ubuntu, but should work on other versions of Linux.
-```bash 
+```bash
 git clone https://github.com/web64/nlpserver.git
 cd nlpserver
 
@@ -51,7 +51,7 @@ python3 -m spacy download xx
 ```
 
 
-### Detailed Installation 
+### Detailed Installation
 If you have any problems installing from requirements.txt you can instead install the libraries one by one.
 
 ```bash
@@ -86,6 +86,9 @@ git clone https://github.com/web64/nlpserver.git
 chown -R forge:forge /home/forge/nlpserver
 cd /home/forge/nlpserver
 
+# Install pkg-config. This package is used to find the ICU version
+sudo apt install pkg-config
+
 # python packages
 apt-get install -y python-numpy libicu-dev
 apt-get install -y python3-pip
@@ -113,7 +116,7 @@ You can now access the web console and test that the NLP Server is working: http
 
 ## API Endpoints
 Endpoint|Method|Parameters|Info|Library
-------- | ---- | --------- | -- | ----- 
+------- | ---- | --------- | -- | -----
 /status|GET| |List installed Polyglot language models and  missing python packages |
 /newspaper|GET|url|Article extraction for provided URL|newspaper
 /newspaper|POST|html|Article extraction for provided HTML|newspaper
@@ -132,7 +135,7 @@ For API responses see /response_examples/ directory.
 ### /newspaper - Article & Metadata Extraction
 Returns article text, authors, main image, publish date and meta-data for given url or HTML.
 
-#### From URL: 
+#### From URL:
 `GET /newspaper?url=http://...`
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
@@ -212,7 +215,7 @@ Generates summary for long text. Size of summary by adding a word_count paramete
 ### Neighbouring words
 `GET /polyglot/neighbours?word=WORD [&lang=en ]`
 
-Uses Polyglot's Embeddings to provide neighbouring words for 
+Uses Polyglot's Embeddings to provide neighbouring words for
 ```bash
 curl http://localhost:6400/polyglot/neighbours?word=obama
 ```
@@ -234,7 +237,7 @@ curl http://localhost:6400/polyglot/neighbours?word=obama
 ### /readability - Article Extraction
 Note: In most cases Newspaper performs better than Readability.
 
-#### From URL: 
+#### From URL:
 `GET /readability?url=https://github.com/web64/nlpserver`
 ```bash
 curl http://localhost:6400/newspaper?url=https://github.com/web64/nlpserver
