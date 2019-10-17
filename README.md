@@ -255,7 +255,7 @@ First, install Supervisor if not already installed
 sudo apt-get update && sudo apt-get install python-setuptools
 sudo easy_install supervisor
 ```
-Copy nlpserver.conf to /etc/supervisor/supervisord.conf and edit paths.
+Copy `nlpserver.conf` to `/etc/supervisor/supervisord.conf` and edit paths.
 Then run this to start the NLPserver:
 
 ```bash
