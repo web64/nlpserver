@@ -470,6 +470,12 @@ def newspaper():
 # def tester():
 # 	return render_template('form.html')
 
-app.run(host='0.0.0.0', port=6400, debug=False)
+#for live run use waitress
+
+from waitress import serve
+
+if __name__ == "__main__":
+	serve(app=app,port=6400)
+#app.run(host='0.0.0.0', port=6400, debug=False)
 
 
