@@ -18,11 +18,9 @@ RUN apt-get -y install pkg-config && \
  	python3 -m pip install -r requirements.txt
 
 # Download language models
-RUN polyglot download LANG:en && \
- 	polyglot download LANG:es 
+RUN polyglot download LANG:en
 
 RUN python3 -m spacy download en && \
-	python3 -m spacy download es && \
 	python3 -m spacy download xx
 
 # Set supervisor config
