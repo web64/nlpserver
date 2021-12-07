@@ -34,8 +34,8 @@ You'll need to download the models for the languages you want to use.
 
 ```bash
 # For example: English and Norwegian
-polyglot download LANG:en
-polyglot download LANG:no
+python3 -m polyglot download LANG:en
+python3 -m polyglot download LANG:no
 ```
 The /status api endpoint will list installed Polyglot language modules: http://localhost:6400/status
 
