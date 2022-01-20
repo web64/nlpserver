@@ -121,7 +121,7 @@ def spacy_entities():
 	else:
 		lang = params['lang']
 
-	nlp = spacy.load( lang )
+	nlp = spacy.load( lang + "_core_web_sm")
 	doc = nlp( params['text'] )
 	data['entities']  = {}
 	
