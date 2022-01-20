@@ -121,7 +121,15 @@ def spacy_entities():
 	else:
 		lang = params['lang']
 
-	nlp = spacy.load( lang )
+		
+	if lang = 'en' or lang = 'zh':
+		langmodel = lang + '_core_web_md'
+	elif lang = 'xx': 
+		langmodel = lang + '_sent_ud_sm'
+	else:
+		langmodel = lang + '_core_news_md'
+		
+	nlp = spacy.load( langmodel )
 	doc = nlp( params['text'] )
 	data['entities']  = {}
 	
