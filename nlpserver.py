@@ -121,7 +121,10 @@ def spacy_entities():
 	else:
 		lang = params['lang']
 
-	nlp = spacy.load( lang )
+	if lang  == 'en':
+		nlp = spacy.load( "en_core_web_sm" )
+	else:
+		nlp = spacy.load( lang+"_core_news_sm" )
 	doc = nlp( params['text'] )
 	data['entities']  = {}
 	
@@ -266,11 +269,9 @@ def polyglot_sentiment():
 	else:
 		language = params['lang']
 
-
 	polyglot_text = Text(params['text'], hint_language_code=language)
 	data['sentiment'] = polyglot_text.polarity
 	return jsonify(data)
-
 
 @app.route("/polyglot/entities", methods=['GET','POST'])
 def polyglot_entities():
