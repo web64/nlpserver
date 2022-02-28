@@ -254,7 +254,7 @@ curl -d "html=<html>...</html>" http://localhost:6400/newspaper
 First, install Supervisor if not already installed
 ```bash
 sudo apt-get update && sudo apt-get install python-setuptools
-sudo easy_install supervisor
+sudo apt install supervisor
 ```
 Copy `nlpserver.conf` to `/etc/supervisor/supervisord.conf` and edit paths.
 Then run this to start the NLPserver:
@@ -262,7 +262,7 @@ Then run this to start the NLPserver:
 ```bash
 sudo supervisorctl reread
 sudo supervisroctl update
-sudo supervisorctl nlpserver start
+sudo supervisorctl start nlpserver
 ```
 
 
