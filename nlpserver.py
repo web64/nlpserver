@@ -51,10 +51,11 @@ default_data = {}
 default_data['web64'] = {
 		'app': 'nlpserver',
 		'version':	'2.0.0',
-		'last_modified': '2022-04-10',
+		'last_modified': '2022-05-10',
 		'documentation': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/status', '/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
+		'endpoints': ['/status', '/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities',
+					 '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
 	}
 
 default_data['message'] = 'NLP Server by web64.com'
@@ -121,21 +122,22 @@ async def predict(text: str = Form(...), lang=Form(...)):
 		prediction: JSON object containing the entities detected in the input text
 	"""
 
-	if lang is None:
-		raise HTTPException(
-			status_code=422, detail="Please provide a model name (model) OR language (lang) to use.")
+	if not lang:
+		data['error'] = '[lang] no language specified'
+		return jsonable_encoder(data)
 
 	if lang:
 		if lang in list(language_models.keys()):
 			model_to_load = language_models[lang]
 			ner_model = config_data['ner_models'][model_to_load]
 		else:
-			raise HTTPException(
-				status_code=400, detail="Invalid language specified!")
+			data['error'] = '[lang] invalid language specified'
+			return jsonable_encoder(data)
 
 	doc = ner_model(text)
 
 	data['entities'] = {}
+	data['message'] = "Spacy.io Named Entity Recognition (NER)"
 
 	counters = {}
 	for ent in doc.ents:
@@ -147,9 +149,7 @@ async def predict(text: str = Form(...), lang=Form(...)):
 
 		data['entities'][ent.label_][counters[ent.label_]] = ent.text
 
-	json_outputs = jsonable_encoder(data)
-
-	return JSONResponse(content=json_outputs)
+	return jsonable_encoder(data)
 
 
 @app.post("/gensim/summarize")
@@ -161,8 +161,7 @@ async def gensim_summarize(text: str = Form(...), word_count: int = Form(...)):
 		prediction: JSON object containing the summarized input text
 	"""
 
-	data = dict(default_data)
-	data['message'] = "Summarize long text - Usage: 'text' POST parameter"
+	data['message'] = "Summarize long text by gensim"
 
 	if not text:
 		data['error'] = '[text] parameter not found'
@@ -191,6 +190,7 @@ async def embeddings(word: str = Form(...), lang=Form(...)):
 		lang = 'en'
 
 	data['neighbours'] = {}
+	data['message'] = "Neighbours (Embeddings) - Find neighbors of word by Polyglot"
 
 	try:
 		word = Word(word, language=lang)
@@ -217,6 +217,7 @@ def language(text: str = Form(...)):
 	"""
 
 	data['langid'] = {}
+	data['message'] = "Language Detection by Polyglot"
 
 	lang_data = langid.classify(text) 
 	data['langid']['language'] = lang_data[0]
@@ -238,6 +239,7 @@ def polyglot_sentiment(text: str = Form(...), lang=Form(...)):
 	"""
 
 	data['sentiment'] = {}
+	data['message'] = "Sentiment Analysis by Polyglot"
 
 	if not lang:
 		lang = 'en' # default language
@@ -259,6 +261,7 @@ def polyglot_entities(text: str = Form(...), lang: str = Form(...)):
 	"""
 
 	data['polyglot'] = {}
+	data['message'] = "Entity Extraction and Sentiment Analysis by Polyglot"
 
 	if not text:
 		data['error'] = 'Text parameter not found'
@@ -306,6 +309,7 @@ def readability(html: str = Form(...)):
 	"""
 
 	data['readability'] = {}
+	data['message'] = "Article Extraction by Readability"
 
 	doc = Document(html)
 	
@@ -331,6 +335,7 @@ def afinn_sentiment(text: str = Form(...), lang: str = Form(...)):
 	"""
 
 	data['afinn'] = 0
+	data['message'] = "Sentiment Analysis by afinn"
 
 	if not lang:
 		language = 'en' # default language
@@ -357,7 +362,7 @@ def newspaper(request: Request, url: Optional[str] = None, html: Optional[str] =
 	data['message'] = "Article Extraction by Newspaper, and Language Detection by Langid"
 	data['newspaper'] = {}
 	data['langid'] = {}
-	print(request.method)
+
 	if request.method == 'GET':
 		if not url:
 			data['error'] = '[url] parameter not found'
