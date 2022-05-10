@@ -29,10 +29,17 @@ from fastapi.encoders import jsonable_encoder
 from polyglot.text import Word
 from gensim.summarization.summarizer import summarize
 import langid
+from polyglot.text import Text
+from readability import Document	
+from bs4 import BeautifulSoup 
+from afinn import Afinn
+from newspaper import Article
 
-def install(model):
+def install(lang, model):
 	subprocess.check_call([sys.executable, "-m", "spacy", "download", model])
-
+	subprocess.check_call([sys.executable, "-m", "polyglot", "download", "sentiment2.{}".format(lang)])
+	subprocess.check_call([sys.executable, "-m", "polyglot", "download", "embeddings2.{}".format(lang)])
+	subprocess.check_call([sys.executable, "-m", "polyglot", "download", "ner2.{}".format(lang)])
 
 logger.remove()
 logger.add('logs/{time}.log', rotation='00:00',
@@ -57,14 +64,15 @@ templates = Jinja2Templates(directory="templates")
 
 config_data = {}
 
+# Externalize to config file
 language_models = {
    'no': 'nb_core_news_lg',
    'nl': 'nl_core_news_sm',
    'en': 'en_core_web_md'
 }
 
-# for lang, model in language_models.items():
-#    install(model)
+#for lang, model in language_models.items():
+#   install(lang, model)
 
 
 def load_models(language_models):
@@ -113,7 +121,6 @@ async def predict(text: str = Form(...), lang=Form(...)):
 		prediction: JSON object containing the entities detected in the input text
 	"""
 
-	print(text)
 	if lang is None:
 		raise HTTPException(
 			status_code=422, detail="Please provide a model name (model) OR language (lang) to use.")
@@ -181,8 +188,6 @@ async def embeddings(word: str = Form(...), lang=Form(...)):
 		return jsonable_encoder(data)
 
 	if not lang:
-		# data['error'] = '[lang] parameter not found'
-		# return jsonify(data)
 		lang = 'en'
 
 	data['neighbours'] = {}
@@ -222,231 +227,175 @@ def language(text: str = Form(...)):
 	return jsonable_encoder(data)
 
 
-# @app.route("/polyglot/sentiment", methods=['GET','POST'])
-# def polyglot_sentiment():
-# 	from polyglot.text import Text
+@app.post("/polyglot/sentiment")
+def polyglot_sentiment(text: str = Form(...), lang=Form(...)):
+	"""
+	Args (from Form):
+		text: str text to identify the sentiment\polarity
+		lang: language of the input text
+	Returns:
+		prediction: JSON object containing the detected sentiment
+	"""
 
-# 	data = dict(default_data)
-# 	data['message'] = "Sentiment Analysis API - POST only"
-# 	data['sentiment'] = {}
+	data['sentiment'] = {}
 
-# 	params = request.form # postdata
+	if not lang:
+		lang = 'en' # default language
+	
+	polyglot_text = Text(text, hint_language_code=lang)
+	data['sentiment'] = polyglot_text.polarity
 
-# 	if not params:
-# 		data['error'] = 'Missing parameters'
-# 		return jsonify(data)
-
-# 	if not params['text']:
-# 		data['error'] = 'Text parameter not found'
-# 		return jsonify(data)
-
-# 	if not 'lang' in params:
-# 		language = 'en' # default language
-# 	else:
-# 		language = params['lang']
+	return jsonable_encoder(data)
 
 
-# 	polyglot_text = Text(params['text'], hint_language_code=language)
-# 	data['sentiment'] = polyglot_text.polarity
-# 	return jsonify(data)
+@app.post("/polyglot/entities")
+def polyglot_entities(text: str = Form(...), lang: str = Form(...)):
+	"""
+	Args (from Form):
+		text: str text to extract entities from
+		lang: language of the input text
+	Returns:
+		prediction: JSON object containing the extracted entities
+	"""
 
+	data['polyglot'] = {}
 
-# @app.route("/polyglot/entities", methods=['GET','POST'])
-# def polyglot_entities():
-# 	from polyglot.text import Text
+	if not text:
+		data['error'] = 'Text parameter not found'
+		return jsonable_encoder(data)
 
-# 	data = dict(default_data)
-# 	data['message'] = "Entity Extraction and Sentiment Analysis API- POST only"
-# 	data['polyglot'] = {}
-
-# 	params = request.form # postdata
-
-# 	if not params:
-# 		data['error'] = 'Missing parameters'
-# 		return jsonify(data)
-
-# 	if not params['text']:
-# 		data['error'] = 'Text parameter not found'
-# 		return jsonify(data)
-
-# 	if not 'lang' in params:
-# 		language = 'en' # default language
-# 	else:
-# 		language = params['lang']
+	if not lang:
+		language = 'en' # default language
+	else:
+		language = lang
 	
 	
-# 	polyglot_text = Text(params['text'], hint_language_code=language)
+	polyglot_text = Text(text, hint_language_code=language)
 
-# 	data['polyglot']['entities'] = polyglot_text.entities
-# 	try:
-# 		data['polyglot']['sentiment'] = polyglot_text.polarity
-# 	except:
-# 		data['polyglot']['sentiment'] = 0
-# 	# if len(params['text']) > 100:
-# 	# 	data['polyglot']['sentiment'] = polyglot_text.polarity
-# 	# else:
-# 	# 	data['polyglot']['sentiment'] = 0
-
-
+	data['polyglot']['entities'] = polyglot_text.entities
 	
+	try:
+		data['polyglot']['sentiment'] = polyglot_text.polarity
+	except:
+		data['polyglot']['sentiment'] = 0
+	if len(text) > 100:
+		data['polyglot']['sentiment'] = polyglot_text.polarity
+	else:
+	 	data['polyglot']['sentiment'] = 0
 
-# 	data['polyglot']['type_entities']  = {}
-# 	if polyglot_text.entities:
-# 		counter = 0
-# 		for entity in polyglot_text.entities:
-# 			data['polyglot']['type_entities'][counter] = {}
-# 			data['polyglot']['type_entities'][counter][entity.tag] = {}
-# 			data['polyglot']['type_entities'][counter][entity.tag] = entity
-# 			counter += 1
+	data['polyglot']['type_entities']  = {}
+	if polyglot_text.entities:
+		counter = 0
+		for entity in polyglot_text.entities:
+			data['polyglot']['type_entities'][counter] = {}
+			data['polyglot']['type_entities'][counter][entity.tag] = {}
+			data['polyglot']['type_entities'][counter][entity.tag] = entity
+			counter += 1
 
-# 	return jsonify(data)
+	return jsonable_encoder(data)
 
 
-# # https://github.com/buriy/python-readability
-# @app.route("/readability", methods=['GET', 'POST'])
-# def readability():
-# 	import requests
-# 	from readability import Document	
-# 	from bs4 import BeautifulSoup 
+# https://github.com/buriy/python-readability
+@app.post("/readability")
+def readability(html: str = Form(...)):
+	"""
+	Args (from Form):
+		html: str html text to extract clean text from
+	Returns:
+		prediction: JSON object containing the cleaned text
+	"""
 
-# 	data = dict(default_data)
-# 	data['message'] = "Article Extraction by Readability"
-# 	data['params'] = {}
-# 	data['error'] = ''
-# 	data['readability'] = {}
+	data['readability'] = {}
 
-# 	if request.method == 'GET':
-# 		data['params']['url'] = request.args.get('url')
-# 		if not data['params']['url']:
-# 			data['error'] = '[url] parameter not found'
-# 			return jsonify(data)
-
-# 		response = requests.get( data['params']['url'] )
-# 		doc = Document(response.text)
-
-# 	elif request.method == 'POST':
-# 		params = request.form # postdata
-
-# 		if not params:
-# 			data['error'] = 'Missing parameters'
-# 			return jsonify(data)
-
-# 		if not params['html']:
-# 			data['error'] = 'html parameter not found'
-# 			return jsonify(data)
+	doc = Document(html)
 	
-# 		doc = Document( params['html'] )
+	data['readability']['title'] = doc.title()
+	data['readability']['short_title'] = doc.short_title()
+	#data['readability']['content'] = doc.content()
+	data['readability']['article_html'] = doc.summary(html_partial=True)
+
+	soup = BeautifulSoup(data['readability']['article_html']) 
+	data['readability']['text'] =  soup.get_text() 
+
+	return jsonable_encoder(data)
+
+
+@app.route("/afinn")
+def afinn_sentiment(text: str = Form(...), lang: str = Form(...)):
+	"""
+	Args (from Form):
+		text: str text to identify the sentiment\polarity
+		lang: str language of the input text
+	Returns:
+		prediction: JSON object containing the detected sentiment
+	"""
+
+	data['afinn'] = 0
+
+	if not lang:
+		language = 'en' # default language
+	else:
+		language = lang
+
+	afinn = Afinn( language=language )
+	data['afinn'] = afinn.score(text)
+
+	return jsonable_encoder(data)
+
+
+@app.post("/newspaper")
+@app.get("/newspaper")
+def newspaper(request: Request, url: Optional[str] = None, html: Optional[str] = None):
+	"""
+	Args (from Form):
+		text: str url to extract the article from
+		lang: str html to extract the article from
+	Returns:
+		prediction: JSON object containing the detected sentiment
+	"""
+
+	data['message'] = "Article Extraction by Newspaper, and Language Detection by Langid"
+	data['newspaper'] = {}
+	data['langid'] = {}
+	print(request.method)
+	if request.method == 'GET':
+		if not url:
+			data['error'] = '[url] parameter not found'
+			return jsonable_encoder(data)
+
+		article = Article(url=url,keep_article_html=True)
+		article.download()
+
+	elif request.method == 'POST':
+		if not html:
+			data['error'] = 'html parameter not found'
+			return jsonable_encoder(data)
 	
-# 	data['readability']['title'] = doc.title()
-# 	data['readability']['short_title'] = doc.short_title()
-# 	#data['readability']['content'] = doc.content()
-# 	data['readability']['article_html'] = doc.summary( html_partial=True )
-
-# 	soup = BeautifulSoup( data['readability']['article_html'] ) 
-# 	data['readability']['text'] =  soup.get_text() 
-
-# 	return jsonify(data)
-
-
-# @app.route("/afinn", methods=['GET', 'POST'])
-# def afinn_sentiment():
-# 	data = dict(default_data)
-# 	data['message'] = "Sentiment Analysis by afinn"
-
-# 	from afinn import Afinn
+		article = Article(url='',keep_article_html=True)
+		article.set_html(html)
 	
+	# Parse html 
+	article.parse()
 
-# 	data['afinn'] = 0
-# 	#data['afinn'] = afinn.score('This is utterly excellent!')
+	data['newspaper']['article_html'] = article.article_html
+	data['newspaper']['text'] = article.text
+	data['newspaper']['title'] = article.title
+	data['newspaper']['authors'] = article.authors
+	data['newspaper']['top_image'] = article.top_image
+	data['newspaper']['canonical_url'] = article.canonical_link
+	data['newspaper']['meta_data'] = article.meta_data
 
-# 	params = request.form # postdata
+	data['newspaper']['meta_description'] = article.meta_description
+	if article.publish_date:
+		data['newspaper']['publish_date'] = '{0:%Y-%m-%d %H:%M:%S}'.format(article.publish_date)
 
-# 	if not params:
-# 		data['error'] = 'Missing parameters'
-# 		return jsonify(data)
+	data['newspaper']['source_url'] = article.source_url
+	data['newspaper']['meta_lang'] = article.meta_lang
 
-# 	if not params['text']:
-# 		data['error'] = 'Text parameter not found'
-# 		return jsonify(data)
+	#Detect language
+	if len(article.text)  > 100:
+		lang_data = langid.classify( article.title + ' ' + article.text ) 
+		data['langid']['language'] = lang_data[0]
+		data['langid']['score'] = lang_data[1]
 
-# 	if not 'lang' in params:
-# 		language = 'en' # default language
-# 	else:
-# 		language = params['lang']
-
-# 	afinn = Afinn( language=language )
-# 	data['afinn'] = afinn.score( params['text'] )
-
-# 	return jsonify(data)
-
-
-# @app.route("/newspaper", methods=['GET', 'POST'])
-# def newspaper():
-# 	from newspaper import Article
-# 	import langid
-
-# 	data = dict(default_data)
-# 	data['message'] = "Article Extraction by Newspaper, and Language Detection by Langid"
-# 	data['params'] = {}
-# 	data['error'] = ''
-# 	data['newspaper'] = {}
-# 	data['langid'] = {}
-
-# 	if request.method == 'GET':
-# 		data['params']['url'] = request.args.get('url')
-# 		if not data['params']['url']:
-# 			data['error'] = '[url] parameter not found'
-# 			return jsonify(data)
-
-# 		article = Article(url=data['params']['url'],keep_article_html=True)
-# 		article.download()
-# 	elif request.method == 'POST':
-# 		params = request.form # postdata
-
-# 		if not params:
-# 			data['error'] = 'Missing parameters'
-# 			return jsonify(data)
-
-# 		if not params['html']:
-# 			data['error'] = 'html parameter not found'
-# 			return jsonify(data)
-	
-# 		article = Article(url='',keep_article_html=True)
-# 		article.set_html( params['html'] )
-# 	else:
-# 		data['error'] = 'Invalid request method'
-# 		return jsonify(data)
-	
-	
-# 	# Parse html 
-# 	article.parse()
-
-# 	data['newspaper']['article_html'] = article.article_html
-# 	data['newspaper']['text'] = article.text
-# 	data['newspaper']['title'] = article.title
-# 	data['newspaper']['authors'] = article.authors
-# 	data['newspaper']['top_image'] = article.top_image
-# 	data['newspaper']['canonical_url'] = article.canonical_link
-# 	data['newspaper']['meta_data'] = article.meta_data
-
-# 	data['newspaper']['meta_description'] = article.meta_description
-# 	if article.publish_date:
-# 		data['newspaper']['publish_date'] = '{0:%Y-%m-%d %H:%M:%S}'.format(article.publish_date)
-
-# 	data['newspaper']['source_url'] = article.source_url
-# 	data['newspaper']['meta_lang'] = article.meta_lang
-
-# 	#Detect language
-# 	if len(article.text)  > 100:
-# 		lang_data = langid.classify( article.title + ' ' + article.text ) 
-# 		data['langid']['language'] = lang_data[0]
-# 		data['langid']['score'] = lang_data[1]
-
-# 	return jsonify(data)
-
-
-# # @app.route("/tester", methods=['GET', 'POST'])
-# # def tester():
-# # 	return render_template('form.html')
-
-# app.run(host='0.0.0.0', port=6400, debug=False)
+	return jsonable_encoder(data)
