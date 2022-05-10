@@ -10,6 +10,7 @@ RUN apt-get update && \
 WORKDIR /usr/src
 RUN git clone https://github.com/web64/nlpserver.git
 WORKDIR /usr/src/nlpserver
+RUN git branch fastapi
 
 # Install dependencies
 RUN apt-get -y install pkg-config && \
@@ -20,14 +21,6 @@ RUN apt-get -y install pkg-config && \
 # Download language models
 RUN polyglot download LANG:en
 
-RUN python3 -m spacy download en && \
-	python3 -m spacy download xx
-
-# Set supervisor config
-COPY nlpserver.conf /etc/supervisor/conf.d
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
- 
-EXPOSE 6400
+RUN python3 -m spacy download en
+CMD ["uvicorn", "nlpserver:app"]
+#EXPOSE 8000

@@ -12,5 +12,7 @@ readability-lxml
 BeautifulSoup4
 afinn
 textblob
+uvicorn
+fastapi
 #summa
 #pattern
