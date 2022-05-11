@@ -72,8 +72,8 @@ language_models = {
    'en': 'en_core_web_md'
 }
 
-#for lang, model in language_models.items():
-#   install(lang, model)
+for lang, model in language_models.items():
+   install(lang, model)
 
 
 def load_models(language_models):

@@ -4,13 +4,15 @@ FROM python:3.8.5-slim-buster
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git && \
-    apt-get install -y supervisor
+    apt-get install -y supervisor && \
+	apt-get install -y tk
 
 # Set the working directory.
 WORKDIR /usr/src
-RUN git clone https://github.com/web64/nlpserver.git
 WORKDIR /usr/src/nlpserver
-RUN git branch fastapi
+
+COPY requirements.txt /usr/src/nlpserver/
+COPY . /usr/src/nlpserver/
 
 # Install dependencies
 RUN apt-get -y install pkg-config && \
@@ -18,9 +20,5 @@ RUN apt-get -y install pkg-config && \
  	apt-get -y install -y python3-pip && \
  	python3 -m pip install -r requirements.txt
 
-# Download language models
-RUN polyglot download LANG:en
-
-RUN python3 -m spacy download en
-CMD ["uvicorn", "nlpserver:app"]
-#EXPOSE 8000
+CMD ["uvicorn", "nlpserver:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
+EXPOSE 80

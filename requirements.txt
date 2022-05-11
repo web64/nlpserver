@@ -6,7 +6,7 @@ morfessor
 langid
 newspaper3k
 pycld2
-gensim
+gensim==3.8.3
 spacy
 readability-lxml
 BeautifulSoup4
@@ -14,5 +14,7 @@ afinn
 textblob
 uvicorn
 fastapi
+loguru
+python-multipart
 #summa
 #pattern
