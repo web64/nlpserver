@@ -185,9 +185,9 @@ def gensim_similarity():
         
     params = request.form  # postdata
     
-    phases = [params['as'],'abcd efgh']
+    phases = [params['text1'],'abcd efgh']
 
-    keyword = params['event']
+    keyword = params['text2']
 
     texts = []
 

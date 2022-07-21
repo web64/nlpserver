@@ -128,6 +128,7 @@ Endpoint|Method|Parameters|Info|Library
 /polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /langid|GET,POST|text|Language detection for provided text|langid
 /gensim/summarize|POST|text,word_count|Summarization of long text|gensim
+/gensim/similarity|POST|text1,text2|Similarity percentage of texts|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
 ## Usage
