@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 #  configurations
-#app.config['var1'] = 'test'
+# app.config['var1'] = 'test'
 
 default_data = {}
 default_data['web64'] = {
@@ -19,22 +19,24 @@ default_data['web64'] = {
 		'last_modified': '2019-01-15',
 		'documentation': 'http://nlpserver.web64.com/',
 		'github': 'https://github.com/web64/nlp-server',
-		'endpoints': ['/status','/gensim/summarize', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
+		'endpoints': ['/status', '/gensim/summarize', '/gensim/similarity', '/polyglot/neighbours', '/langid', '/polyglot/entities', '/polyglot/sentiment', '/newspaper', '/readability', '/spacy/entities', '/afinn'],
 	}
 
 default_data['message'] = 'NLP Server by web64.com'
 data = default_data
 
+
 @app.route("/")
 def main():
 	return render_template('form.html')
-	#return jsonify(data)
+	# return jsonify(data)
+
 
 @app.route('/status')
 def status():
 	data = dict(default_data)
 	data['missing_libraries'] = []
-	
+
 	try:
 		import textblob
 	except ImportError:
@@ -48,7 +50,10 @@ def status():
 		import gensim
 	except ImportError:
 		data['missing_libraries'].append('gensim')
-	
+	try:
+		import jieba
+	except ImportError:
+		data['missing_libraries'].append('jieba')
 	try:
 		import newspaper
 	except ImportError:
@@ -63,12 +68,12 @@ def status():
 		import readability
 	except ImportError:
 		data['missing_libraries'].append('readability')
-	
+
 	try:
 		import bs4
 	except ImportError:
 		data['missing_libraries'].append('bs4')
-	
+
 	try:
 		import afinn
 	except ImportError:
@@ -106,7 +111,7 @@ def spacy_entities():
 	if request.method == 'GET':
 		return jsonify(data)
 
-	params = request.form # postdata
+	params = request.form  # postdata
 
 	if not params:
 		data['error'] = 'Missing parameters'
@@ -121,20 +126,20 @@ def spacy_entities():
 	else:
 		lang = params['lang']
 
-	nlp = spacy.load( lang )
-	doc = nlp( params['text'] )
-	data['entities']  = {}
-	
-	counters  = {}
+	nlp = spacy.load(lang)
+	doc = nlp(params['text'])
+	data['entities'] = {}
+
+	counters = {}
 	for ent in doc.ents:
 		if not ent.label_ in data['entities']:
 			data['entities'][ent.label_] = dict()
 			counters[ent.label_] = 0
 		else:
 			counters[ent.label_] += 1
-	
-		data['entities'][ ent.label_ ][ counters[ent.label_] ] =  ent.text
-		#data['entities'][ent.label_].add( ent.text )
+
+		data['entities'][ent.label_][counters[ent.label_]] = ent.text
+		# data['entities'][ent.label_].add( ent.text )
 
 	return jsonify(data)
 
@@ -143,13 +148,11 @@ def spacy_entities():
 def gensim_summarize():
 	from gensim.summarization.summarizer import summarize
 	data = dict(default_data)
-	data['message'] = "Summarize long text - Usage: 'text' POST parameter"
+	data['message'] = "Summarize long text - Usage: 'text' POST parameter"+request.form['text']
+    
 	params = {}
 
-	if request.method == 'GET':
-		return jsonify(data)
-
-	params = request.form # postdata
+	params = request.form  # postdata
 
 	if not params:
 		data['error'] = 'Missing parameters'
@@ -163,10 +166,53 @@ def gensim_summarize():
 		word_count = None
 	else:
 		word_count = int(params['word_count'])
-	
-	data['summarize'] = summarize( text=params['text'], word_count=word_count )
+
+	data['summarize'] = summarize(text=params['text'], word_count=word_count)
 
 	return jsonify(data)
+
+
+@app.route("/gensim/similarity", methods=['GET', 'POST'])
+def gensim_similarity():
+
+    import jieba
+
+    from gensim import corpora, models, similarities
+    data = dict(default_data)
+    data['message'] = "get similarity percentage of phases"
+    
+    params = {}
+        
+    params = request.form  # postdata
+    
+    phases = [params['as'],'abcd efgh']
+
+    keyword = params['event']
+
+    texts = []
+
+    for phase in phases:
+        texts.append(list(jieba.cut(phase)))
+    
+    dictionary = corpora.Dictionary(texts)
+
+    feature_cnt = len(dictionary.token2id)
+
+    corpus = [dictionary.doc2bow(text) for text in texts]
+    
+    tfidf = models.TfidfModel(corpus)
+
+    kw_vector = dictionary.doc2bow( list(jieba.cut(keyword)) )
+
+    index = similarities.SparseMatrixSimilarity(tfidf[corpus], num_features = feature_cnt)
+
+    sim = index[tfidf[kw_vector]]
+
+    data['sim']= sim.tolist()
+    #for i in range(len(sim)):
+        #data['simlarity'+str((i+1))] = str(sim[i])
+
+    return jsonify(data)
 
 
 @app.route("/polyglot/neighbours", methods=['GET'])
@@ -174,6 +220,7 @@ def embeddings():
 	from polyglot.text import Word
 	data = dict(default_data)
 	data['message'] = "Neighbours (Embeddings) - Find neighbors of word API - Parameters: 'word', 'lang' language (default: en)"
+
 	params = {}
 	
 	params['word']= request.args.get('word')
@@ -360,7 +407,7 @@ def readability():
 	
 	data['readability']['title'] = doc.title()
 	data['readability']['short_title'] = doc.short_title()
-	#data['readability']['content'] = doc.content()
+	# data['readability']['content'] = doc.content()
 	data['readability']['article_html'] = doc.summary( html_partial=True )
 
 	soup = BeautifulSoup( data['readability']['article_html'] ) 
@@ -378,7 +425,7 @@ def afinn_sentiment():
 	
 
 	data['afinn'] = 0
-	#data['afinn'] = afinn.score('This is utterly excellent!')
+	# data['afinn'] = afinn.score('This is utterly excellent!')
 
 	params = request.form # postdata
 
@@ -457,7 +504,7 @@ def newspaper():
 	data['newspaper']['source_url'] = article.source_url
 	data['newspaper']['meta_lang'] = article.meta_lang
 
-	#Detect language
+	# Detect language
 	if len(article.text)  > 100:
 		lang_data = langid.classify( article.title + ' ' + article.text ) 
 		data['langid']['language'] = lang_data[0]
