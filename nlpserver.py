@@ -313,9 +313,11 @@ def polyglot_sentiment():
 	else:
 		language = params['lang']
 
-
-	polyglot_text = Text(params['text'], hint_language_code=language)
-	data['sentiment'] = polyglot_text.polarity
+	try:
+		polyglot_text = Text(params['text'], hint_language_code=language)
+		data['sentiment'] = polyglot_text.polarity
+	except ZeroDivisionError: 
+		data['sentiment'] = 0
 	return jsonify(data)
 
 
