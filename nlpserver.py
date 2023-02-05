@@ -320,6 +320,27 @@ def polyglot_sentiment():
 	return jsonify(data)
 
 
+@app.route("/trans/sentiment", methods=['GET','POST'])
+def trans_sentiment():
+	from transformers import pipeline
+	data = dict(default_data)
+	data['message'] = "Sentiment Analysis API - POST only"
+	data['sentiment'] = {}
+	
+	params = request.form # postdata
+	
+	if not params:
+		data['error'] = 'Missing parameters'
+		return jsonify(data)
+
+	if not params['text']:
+		data['error'] = 'Text parameter not found'
+		return jsonify(data)
+
+	classifier = pipeline('sentiment-analysis', model="distilbert-base-uncased-finetuned-sst-2-english")
+	data['sentiment'] = classifier([params['text']])
+	return jsonify(data)
+
 @app.route("/polyglot/entities", methods=['GET','POST'])
 def polyglot_entities():
 	from polyglot.text import Text
