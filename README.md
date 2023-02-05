@@ -125,6 +125,7 @@ Endpoint|Method|Parameters|Info|Library
 /readability|POST|html|Article extraction for provided HTML|readability-lxml
 /polyglot/entities|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /polyglot/sentiment|POST|text,lang|Sentiment analysis for provided text|polyglot
+/trans/sentiment|POST|text,lang|Sentiment analysis for provided text using transformer|polyglot
 /polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /langid|GET,POST|text|Language detection for provided text|langid
 /gensim/summarize|POST|text,word_count|Summarization of long text|gensim
