@@ -73,6 +73,7 @@ sudo pip3 install readability-lxml
 sudo pip3 install BeautifulSoup4
 sudo pip3 install afinn
 sudo pip3 install textblob
+sudo pip3 install transformer
 ```
 The /status api endpoint will list missing python modules: http://localhost:6400/status
 
