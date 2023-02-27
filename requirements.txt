@@ -12,5 +12,6 @@ readability-lxml
 BeautifulSoup4
 afinn
 textblob
+transformer
 #summa
 #pattern

@@ -1,7 +1,7 @@
 # NLP Server
-<p align="center">
+<!-- <p align="center">
   <img src="http://cdn.web64.com/nlp-norway/nlp-server-2.png" width="400">
-</p>
+</p> -->
 
 NLP Server is a Python 3 Flask web service for easy access to multilingual Natural Language Processing tasks such as language detection, article extraction, entity extraction, sentiment analysis, summarization and more.
 
@@ -73,6 +73,7 @@ sudo pip3 install readability-lxml
 sudo pip3 install BeautifulSoup4
 sudo pip3 install afinn
 sudo pip3 install textblob
+sudo pip3 install transformer
 ```
 The /status api endpoint will list missing python modules: http://localhost:6400/status
 
@@ -125,9 +126,11 @@ Endpoint|Method|Parameters|Info|Library
 /readability|POST|html|Article extraction for provided HTML|readability-lxml
 /polyglot/entities|POST|text,lang|Entity extraction and sentiment analysis for provided text|polyglot
 /polyglot/sentiment|POST|text,lang|Sentiment analysis for provided text|polyglot
+/trans/sentiment|POST|text,lang|Sentiment analysis for provided text using transformer|polyglot
 /polyglot/neighbours|GET|word,lang|Embeddings: neighbouring words|polyglot
 /langid|GET,POST|text|Language detection for provided text|langid
 /gensim/summarize|POST|text,word_count|Summarization of long text|gensim
+/gensim/similarity|POST|text1,text2|Similarity percentage of texts|gensim
 /spacy/entities|POST|text,lang|Entity extraction for provided text in given language|SpaCy
 
 ## Usage
